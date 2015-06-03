@@ -1,4 +1,4 @@
-# dropsonde-protocol-go
+# sonde-go
 Go implementation of Cloud Foundry's Dropsonde Protocol
 
 ## Libraries sharing this protocol
