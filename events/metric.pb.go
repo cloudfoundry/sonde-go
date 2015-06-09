@@ -183,19 +183,18 @@ func (m *ValueMetric) Unmarshal(data []byte) error {
 				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
 			}
 			var v uint64
-			i := index + 8
-			if i > l {
+			if (index + 8) > l {
 				return io.ErrUnexpectedEOF
 			}
-			index = i
-			v = uint64(data[i-8])
-			v |= uint64(data[i-7]) << 8
-			v |= uint64(data[i-6]) << 16
-			v |= uint64(data[i-5]) << 24
-			v |= uint64(data[i-4]) << 32
-			v |= uint64(data[i-3]) << 40
-			v |= uint64(data[i-2]) << 48
-			v |= uint64(data[i-1]) << 56
+			index += 8
+			v = uint64(data[index-8])
+			v |= uint64(data[index-7]) << 8
+			v |= uint64(data[index-6]) << 16
+			v |= uint64(data[index-5]) << 24
+			v |= uint64(data[index-4]) << 32
+			v |= uint64(data[index-3]) << 40
+			v |= uint64(data[index-2]) << 48
+			v |= uint64(data[index-1]) << 56
 			v2 := math.Float64frombits(v)
 			m.Value = &v2
 			hasFields[0] |= uint64(0x00000002)
@@ -432,19 +431,18 @@ func (m *ContainerMetric) Unmarshal(data []byte) error {
 				return fmt.Errorf("proto: wrong wireType = %d for field CpuPercentage", wireType)
 			}
 			var v uint64
-			i := index + 8
-			if i > l {
+			if (index + 8) > l {
 				return io.ErrUnexpectedEOF
 			}
-			index = i
-			v = uint64(data[i-8])
-			v |= uint64(data[i-7]) << 8
-			v |= uint64(data[i-6]) << 16
-			v |= uint64(data[i-5]) << 24
-			v |= uint64(data[i-4]) << 32
-			v |= uint64(data[i-3]) << 40
-			v |= uint64(data[i-2]) << 48
-			v |= uint64(data[i-1]) << 56
+			index += 8
+			v = uint64(data[index-8])
+			v |= uint64(data[index-7]) << 8
+			v |= uint64(data[index-6]) << 16
+			v |= uint64(data[index-5]) << 24
+			v |= uint64(data[index-4]) << 32
+			v |= uint64(data[index-3]) << 40
+			v |= uint64(data[index-2]) << 48
+			v |= uint64(data[index-1]) << 56
 			v2 := math.Float64frombits(v)
 			m.CpuPercentage = &v2
 			hasFields[0] |= uint64(0x00000004)

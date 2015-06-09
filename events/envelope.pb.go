@@ -785,37 +785,6 @@ func (m *Envelope) MarshalTo(data []byte) (n int, err error) {
 		i++
 		i = encodeVarintEnvelope(data, i, uint64(*m.EventType))
 	}
-	if m.Timestamp != nil {
-		data[i] = 0x30
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(*m.Timestamp))
-	}
-	if m.Deployment != nil {
-		data[i] = 0x6a
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Deployment)))
-		i += copy(data[i:], *m.Deployment)
-	}
-	if m.Job != nil {
-		data[i] = 0x72
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Job)))
-		i += copy(data[i:], *m.Job)
-	}
-	if m.Index != nil {
-		data[i] = 0x7a
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Index)))
-		i += copy(data[i:], *m.Index)
-	}
-	if m.Ip != nil {
-		data[i] = 0x82
-		i++
-		data[i] = 0x1
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Ip)))
-		i += copy(data[i:], *m.Ip)
-	}
 	if m.Heartbeat != nil {
 		data[i] = 0x1a
 		i++
@@ -845,6 +814,11 @@ func (m *Envelope) MarshalTo(data []byte) (n int, err error) {
 			return 0, err
 		}
 		i += n3
+	}
+	if m.Timestamp != nil {
+		data[i] = 0x30
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(*m.Timestamp))
 	}
 	if m.HttpStartStop != nil {
 		data[i] = 0x3a
@@ -905,6 +879,32 @@ func (m *Envelope) MarshalTo(data []byte) (n int, err error) {
 			return 0, err
 		}
 		i += n9
+	}
+	if m.Deployment != nil {
+		data[i] = 0x6a
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Deployment)))
+		i += copy(data[i:], *m.Deployment)
+	}
+	if m.Job != nil {
+		data[i] = 0x72
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Job)))
+		i += copy(data[i:], *m.Job)
+	}
+	if m.Index != nil {
+		data[i] = 0x7a
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Index)))
+		i += copy(data[i:], *m.Index)
+	}
+	if m.Ip != nil {
+		data[i] = 0x82
+		i++
+		data[i] = 0x1
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Ip)))
+		i += copy(data[i:], *m.Ip)
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(data[i:], m.XXX_unrecognized)
