@@ -15,7 +15,7 @@ cd $TARGET
 go get github.com/gogo/protobuf/{proto,protoc-gen-gogo,gogoproto}
 
 rm -rf generate-go-tmp
-mkdir -p generate-go-tmp/events generate-go-tmp/control
+mkdir -p generate-go-tmp/events
 
 mkdir -p events
 for i in $(ls definitions/events/*.proto); do
@@ -23,18 +23,8 @@ for i in $(ls definitions/events/*.proto); do
     cat $i >> generate-go-tmp/events/`basename $i`
 done
 
-mkdir -p control
-for i in $(ls definitions/control/*.proto); do
-    cp go/go_preamble.proto generate-go-tmp/control/`basename $i`
-    cat $i >> generate-go-tmp/control/`basename $i`
-done
-
 pushd generate-go-tmp/events > /dev/null
 protoc --plugin=$(which protoc-gen-gogo) --gogo_out=$TARGET/events --proto_path=$GOPATH/src:$GOPATH/src/github.com/gogo/protobuf/protobuf:. *.proto
-popd > /dev/null
-
-pushd generate-go-tmp/control > /dev/null
-protoc --plugin=$(which protoc-gen-gogo) --gogo_out=$TARGET/control --proto_path=$GOPATH/src:$GOPATH/src/github.com/gogo/protobuf/protobuf:. *.proto
 popd > /dev/null
 
 rm -r generate-go-tmp
