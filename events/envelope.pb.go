@@ -651,7 +651,7 @@ func (m *Envelope) Unmarshal(data []byte) error {
 				}
 			}
 			index -= sizeOfWire
-			skippy, err := skipEnvelope(data[index:])
+			skippy, err := github_com_gogo_protobuf_proto.Skip(data[index:])
 			if err != nil {
 				return err
 			}
@@ -670,90 +670,6 @@ func (m *Envelope) Unmarshal(data []byte) error {
 	}
 
 	return nil
-}
-func skipEnvelope(data []byte) (n int, err error) {
-	l := len(data)
-	index := 0
-	for index < l {
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if index >= l {
-				return 0, io.ErrUnexpectedEOF
-			}
-			b := data[index]
-			index++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		wireType := int(wire & 0x7)
-		switch wireType {
-		case 0:
-			for {
-				if index >= l {
-					return 0, io.ErrUnexpectedEOF
-				}
-				index++
-				if data[index-1] < 0x80 {
-					break
-				}
-			}
-			return index, nil
-		case 1:
-			index += 8
-			return index, nil
-		case 2:
-			var length int
-			for shift := uint(0); ; shift += 7 {
-				if index >= l {
-					return 0, io.ErrUnexpectedEOF
-				}
-				b := data[index]
-				index++
-				length |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			index += length
-			return index, nil
-		case 3:
-			for {
-				var wire uint64
-				var start int = index
-				for shift := uint(0); ; shift += 7 {
-					if index >= l {
-						return 0, io.ErrUnexpectedEOF
-					}
-					b := data[index]
-					index++
-					wire |= (uint64(b) & 0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				wireType := int(wire & 0x7)
-				if wireType == 4 {
-					break
-				}
-				next, err := skipEnvelope(data[start:])
-				if err != nil {
-					return 0, err
-				}
-				index = start + next
-			}
-			return index, nil
-		case 4:
-			return index, nil
-		case 5:
-			index += 4
-			return index, nil
-		default:
-			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
-		}
-	}
-	panic("unreachable")
 }
 func (m *Envelope) Size() (n int) {
 	var l int
@@ -869,6 +785,37 @@ func (m *Envelope) MarshalTo(data []byte) (n int, err error) {
 		i++
 		i = encodeVarintEnvelope(data, i, uint64(*m.EventType))
 	}
+	if m.Timestamp != nil {
+		data[i] = 0x30
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(*m.Timestamp))
+	}
+	if m.Deployment != nil {
+		data[i] = 0x6a
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Deployment)))
+		i += copy(data[i:], *m.Deployment)
+	}
+	if m.Job != nil {
+		data[i] = 0x72
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Job)))
+		i += copy(data[i:], *m.Job)
+	}
+	if m.Index != nil {
+		data[i] = 0x7a
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Index)))
+		i += copy(data[i:], *m.Index)
+	}
+	if m.Ip != nil {
+		data[i] = 0x82
+		i++
+		data[i] = 0x1
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Ip)))
+		i += copy(data[i:], *m.Ip)
+	}
 	if m.Heartbeat != nil {
 		data[i] = 0x1a
 		i++
@@ -898,11 +845,6 @@ func (m *Envelope) MarshalTo(data []byte) (n int, err error) {
 			return 0, err
 		}
 		i += n3
-	}
-	if m.Timestamp != nil {
-		data[i] = 0x30
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(*m.Timestamp))
 	}
 	if m.HttpStartStop != nil {
 		data[i] = 0x3a
@@ -963,32 +905,6 @@ func (m *Envelope) MarshalTo(data []byte) (n int, err error) {
 			return 0, err
 		}
 		i += n9
-	}
-	if m.Deployment != nil {
-		data[i] = 0x6a
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Deployment)))
-		i += copy(data[i:], *m.Deployment)
-	}
-	if m.Job != nil {
-		data[i] = 0x72
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Job)))
-		i += copy(data[i:], *m.Job)
-	}
-	if m.Index != nil {
-		data[i] = 0x7a
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Index)))
-		i += copy(data[i:], *m.Index)
-	}
-	if m.Ip != nil {
-		data[i] = 0x82
-		i++
-		data[i] = 0x1
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Ip)))
-		i += copy(data[i:], *m.Ip)
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(data[i:], m.XXX_unrecognized)
