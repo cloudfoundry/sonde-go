@@ -8,7 +8,6 @@
 	It is generated from these files:
 		envelope.proto
 		error.proto
-		heartbeat.proto
 		http.proto
 		log.proto
 		metric.proto
@@ -36,7 +35,7 @@ var _ = math.Inf
 type Envelope_EventType int32
 
 const (
-	Envelope_Heartbeat       Envelope_EventType = 1
+	// Removed Heartbeat at position 1
 	Envelope_HttpStart       Envelope_EventType = 2
 	Envelope_HttpStop        Envelope_EventType = 3
 	Envelope_HttpStartStop   Envelope_EventType = 4
@@ -48,7 +47,6 @@ const (
 )
 
 var Envelope_EventType_name = map[int32]string{
-	1: "Heartbeat",
 	2: "HttpStart",
 	3: "HttpStop",
 	4: "HttpStartStop",
@@ -59,7 +57,6 @@ var Envelope_EventType_name = map[int32]string{
 	9: "ContainerMetric",
 }
 var Envelope_EventType_value = map[string]int32{
-	"Heartbeat":       1,
 	"HttpStart":       2,
 	"HttpStop":        3,
 	"HttpStartStop":   4,
@@ -89,23 +86,23 @@ func (x *Envelope_EventType) UnmarshalJSON(data []byte) error {
 
 // / Envelope wraps an Event and adds metadata.
 type Envelope struct {
-	Origin           *string             `protobuf:"bytes,1,req,name=origin" json:"origin,omitempty"`
-	EventType        *Envelope_EventType `protobuf:"varint,2,req,name=eventType,enum=events.Envelope_EventType" json:"eventType,omitempty"`
-	Timestamp        *int64              `protobuf:"varint,6,opt,name=timestamp" json:"timestamp,omitempty"`
-	Deployment       *string             `protobuf:"bytes,13,opt,name=deployment" json:"deployment,omitempty"`
-	Job              *string             `protobuf:"bytes,14,opt,name=job" json:"job,omitempty"`
-	Index            *string             `protobuf:"bytes,15,opt,name=index" json:"index,omitempty"`
-	Ip               *string             `protobuf:"bytes,16,opt,name=ip" json:"ip,omitempty"`
-	Heartbeat        *Heartbeat          `protobuf:"bytes,3,opt,name=heartbeat" json:"heartbeat,omitempty"`
-	HttpStart        *HttpStart          `protobuf:"bytes,4,opt,name=httpStart" json:"httpStart,omitempty"`
-	HttpStop         *HttpStop           `protobuf:"bytes,5,opt,name=httpStop" json:"httpStop,omitempty"`
-	HttpStartStop    *HttpStartStop      `protobuf:"bytes,7,opt,name=httpStartStop" json:"httpStartStop,omitempty"`
-	LogMessage       *LogMessage         `protobuf:"bytes,8,opt,name=logMessage" json:"logMessage,omitempty"`
-	ValueMetric      *ValueMetric        `protobuf:"bytes,9,opt,name=valueMetric" json:"valueMetric,omitempty"`
-	CounterEvent     *CounterEvent       `protobuf:"bytes,10,opt,name=counterEvent" json:"counterEvent,omitempty"`
-	Error            *Error              `protobuf:"bytes,11,opt,name=error" json:"error,omitempty"`
-	ContainerMetric  *ContainerMetric    `protobuf:"bytes,12,opt,name=containerMetric" json:"containerMetric,omitempty"`
-	XXX_unrecognized []byte              `json:"-"`
+	Origin     *string             `protobuf:"bytes,1,req,name=origin" json:"origin,omitempty"`
+	EventType  *Envelope_EventType `protobuf:"varint,2,req,name=eventType,enum=events.Envelope_EventType" json:"eventType,omitempty"`
+	Timestamp  *int64              `protobuf:"varint,6,opt,name=timestamp" json:"timestamp,omitempty"`
+	Deployment *string             `protobuf:"bytes,13,opt,name=deployment" json:"deployment,omitempty"`
+	Job        *string             `protobuf:"bytes,14,opt,name=job" json:"job,omitempty"`
+	Index      *string             `protobuf:"bytes,15,opt,name=index" json:"index,omitempty"`
+	Ip         *string             `protobuf:"bytes,16,opt,name=ip" json:"ip,omitempty"`
+	// Removed Heartbeat at position 3
+	HttpStart        *HttpStart       `protobuf:"bytes,4,opt,name=httpStart" json:"httpStart,omitempty"`
+	HttpStop         *HttpStop        `protobuf:"bytes,5,opt,name=httpStop" json:"httpStop,omitempty"`
+	HttpStartStop    *HttpStartStop   `protobuf:"bytes,7,opt,name=httpStartStop" json:"httpStartStop,omitempty"`
+	LogMessage       *LogMessage      `protobuf:"bytes,8,opt,name=logMessage" json:"logMessage,omitempty"`
+	ValueMetric      *ValueMetric     `protobuf:"bytes,9,opt,name=valueMetric" json:"valueMetric,omitempty"`
+	CounterEvent     *CounterEvent    `protobuf:"bytes,10,opt,name=counterEvent" json:"counterEvent,omitempty"`
+	Error            *Error           `protobuf:"bytes,11,opt,name=error" json:"error,omitempty"`
+	ContainerMetric  *ContainerMetric `protobuf:"bytes,12,opt,name=containerMetric" json:"containerMetric,omitempty"`
+	XXX_unrecognized []byte           `json:"-"`
 }
 
 func (m *Envelope) Reset()         { *m = Envelope{} }
@@ -123,7 +120,7 @@ func (m *Envelope) GetEventType() Envelope_EventType {
 	if m != nil && m.EventType != nil {
 		return *m.EventType
 	}
-	return Envelope_Heartbeat
+	return Envelope_HttpStart
 }
 
 func (m *Envelope) GetTimestamp() int64 {
@@ -159,13 +156,6 @@ func (m *Envelope) GetIp() string {
 		return *m.Ip
 	}
 	return ""
-}
-
-func (m *Envelope) GetHeartbeat() *Heartbeat {
-	if m != nil {
-		return m.Heartbeat
-	}
-	return nil
 }
 
 func (m *Envelope) GetHttpStart() *HttpStart {
@@ -397,33 +387,6 @@ func (m *Envelope) Unmarshal(data []byte) error {
 			}
 			s := string(data[index:postIndex])
 			m.Ip = &s
-			index = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Heartbeat", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if index >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := data[index]
-				index++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			postIndex := index + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Heartbeat == nil {
-				m.Heartbeat = &Heartbeat{}
-			}
-			if err := m.Heartbeat.Unmarshal(data[index:postIndex]); err != nil {
-				return err
-			}
 			index = postIndex
 		case 4:
 			if wireType != 2 {
@@ -700,10 +663,6 @@ func (m *Envelope) Size() (n int) {
 		l = len(*m.Ip)
 		n += 2 + l + sovEnvelope(uint64(l))
 	}
-	if m.Heartbeat != nil {
-		l = m.Heartbeat.Size()
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
 	if m.HttpStart != nil {
 		l = m.HttpStart.Size()
 		n += 1 + l + sovEnvelope(uint64(l))
@@ -816,95 +775,85 @@ func (m *Envelope) MarshalTo(data []byte) (n int, err error) {
 		i = encodeVarintEnvelope(data, i, uint64(len(*m.Ip)))
 		i += copy(data[i:], *m.Ip)
 	}
-	if m.Heartbeat != nil {
-		data[i] = 0x1a
+	if m.HttpStart != nil {
+		data[i] = 0x22
 		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.Heartbeat.Size()))
-		n1, err := m.Heartbeat.MarshalTo(data[i:])
+		i = encodeVarintEnvelope(data, i, uint64(m.HttpStart.Size()))
+		n1, err := m.HttpStart.MarshalTo(data[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n1
 	}
-	if m.HttpStart != nil {
-		data[i] = 0x22
+	if m.HttpStop != nil {
+		data[i] = 0x2a
 		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.HttpStart.Size()))
-		n2, err := m.HttpStart.MarshalTo(data[i:])
+		i = encodeVarintEnvelope(data, i, uint64(m.HttpStop.Size()))
+		n2, err := m.HttpStop.MarshalTo(data[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n2
 	}
-	if m.HttpStop != nil {
-		data[i] = 0x2a
+	if m.HttpStartStop != nil {
+		data[i] = 0x3a
 		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.HttpStop.Size()))
-		n3, err := m.HttpStop.MarshalTo(data[i:])
+		i = encodeVarintEnvelope(data, i, uint64(m.HttpStartStop.Size()))
+		n3, err := m.HttpStartStop.MarshalTo(data[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n3
 	}
-	if m.HttpStartStop != nil {
-		data[i] = 0x3a
+	if m.LogMessage != nil {
+		data[i] = 0x42
 		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.HttpStartStop.Size()))
-		n4, err := m.HttpStartStop.MarshalTo(data[i:])
+		i = encodeVarintEnvelope(data, i, uint64(m.LogMessage.Size()))
+		n4, err := m.LogMessage.MarshalTo(data[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n4
 	}
-	if m.LogMessage != nil {
-		data[i] = 0x42
+	if m.ValueMetric != nil {
+		data[i] = 0x4a
 		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.LogMessage.Size()))
-		n5, err := m.LogMessage.MarshalTo(data[i:])
+		i = encodeVarintEnvelope(data, i, uint64(m.ValueMetric.Size()))
+		n5, err := m.ValueMetric.MarshalTo(data[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n5
 	}
-	if m.ValueMetric != nil {
-		data[i] = 0x4a
+	if m.CounterEvent != nil {
+		data[i] = 0x52
 		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.ValueMetric.Size()))
-		n6, err := m.ValueMetric.MarshalTo(data[i:])
+		i = encodeVarintEnvelope(data, i, uint64(m.CounterEvent.Size()))
+		n6, err := m.CounterEvent.MarshalTo(data[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n6
 	}
-	if m.CounterEvent != nil {
-		data[i] = 0x52
+	if m.Error != nil {
+		data[i] = 0x5a
 		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.CounterEvent.Size()))
-		n7, err := m.CounterEvent.MarshalTo(data[i:])
+		i = encodeVarintEnvelope(data, i, uint64(m.Error.Size()))
+		n7, err := m.Error.MarshalTo(data[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n7
 	}
-	if m.Error != nil {
-		data[i] = 0x5a
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.Error.Size()))
-		n8, err := m.Error.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n8
-	}
 	if m.ContainerMetric != nil {
 		data[i] = 0x62
 		i++
 		i = encodeVarintEnvelope(data, i, uint64(m.ContainerMetric.Size()))
-		n9, err := m.ContainerMetric.MarshalTo(data[i:])
+		n8, err := m.ContainerMetric.MarshalTo(data[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n9
+		i += n8
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(data[i:], m.XXX_unrecognized)
