@@ -7,7 +7,7 @@ package events
 import proto "github.com/gogo/protobuf/proto"
 import math "math"
 
-// discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto/gogo.pb"
+// discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
 
 import io "io"
 import fmt "fmt"
@@ -44,8 +44,6 @@ func (m *UUID) GetHigh() uint64 {
 	return 0
 }
 
-func init() {
-}
 func (m *UUID) Unmarshal(data []byte) error {
 	var hasFields [1]uint64
 	l := len(data)
@@ -116,6 +114,9 @@ func (m *UUID) Unmarshal(data []byte) error {
 			if err != nil {
 				return err
 			}
+			if skippy < 0 {
+				return ErrInvalidLengthUuid
+			}
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -178,10 +179,13 @@ func skipUuid(data []byte) (n int, err error) {
 				}
 			}
 			iNdEx += length
+			if length < 0 {
+				return 0, ErrInvalidLengthUuid
+			}
 			return iNdEx, nil
 		case 3:
 			for {
-				var wire uint64
+				var innerWire uint64
 				var start int = iNdEx
 				for shift := uint(0); ; shift += 7 {
 					if iNdEx >= l {
@@ -189,13 +193,13 @@ func skipUuid(data []byte) (n int, err error) {
 					}
 					b := data[iNdEx]
 					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
+					innerWire |= (uint64(b) & 0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				wireType := int(wire & 0x7)
-				if wireType == 4 {
+				innerWireType := int(innerWire & 0x7)
+				if innerWireType == 4 {
 					break
 				}
 				next, err := skipUuid(data[start:])
@@ -216,6 +220,11 @@ func skipUuid(data []byte) (n int, err error) {
 	}
 	panic("unreachable")
 }
+
+var (
+	ErrInvalidLengthUuid = fmt.Errorf("proto: negative length found during unmarshaling")
+)
+
 func (m *UUID) Size() (n int) {
 	var l int
 	_ = l
@@ -254,7 +263,7 @@ func (m *UUID) Marshal() (data []byte, err error) {
 	return data[:n], nil
 }
 
-func (m *UUID) MarshalTo(data []byte) (n int, err error) {
+func (m *UUID) MarshalTo(data []byte) (int, error) {
 	var i int
 	_ = i
 	var l int

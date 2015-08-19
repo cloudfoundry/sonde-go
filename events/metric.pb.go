@@ -7,7 +7,7 @@ package events
 import proto "github.com/gogo/protobuf/proto"
 import math "math"
 
-// discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto/gogo.pb"
+// discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
 
 import io "io"
 import fmt "fmt"
@@ -132,8 +132,6 @@ func (m *ContainerMetric) GetDiskBytes() uint64 {
 	return 0
 }
 
-func init() {
-}
 func (m *ValueMetric) Unmarshal(data []byte) error {
 	var hasFields [1]uint64
 	l := len(data)
@@ -195,7 +193,7 @@ func (m *ValueMetric) Unmarshal(data []byte) error {
 			v |= uint64(data[iNdEx-3]) << 40
 			v |= uint64(data[iNdEx-2]) << 48
 			v |= uint64(data[iNdEx-1]) << 56
-			v2 := math.Float64frombits(v)
+			v2 := float64(math.Float64frombits(v))
 			m.Value = &v2
 			hasFields[0] |= uint64(0x00000002)
 		case 3:
@@ -235,6 +233,9 @@ func (m *ValueMetric) Unmarshal(data []byte) error {
 			skippy, err := skipMetric(data[iNdEx:])
 			if err != nil {
 				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthMetric
 			}
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
@@ -348,6 +349,9 @@ func (m *CounterEvent) Unmarshal(data []byte) error {
 			if err != nil {
 				return err
 			}
+			if skippy < 0 {
+				return ErrInvalidLengthMetric
+			}
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -443,7 +447,7 @@ func (m *ContainerMetric) Unmarshal(data []byte) error {
 			v |= uint64(data[iNdEx-3]) << 40
 			v |= uint64(data[iNdEx-2]) << 48
 			v |= uint64(data[iNdEx-1]) << 56
-			v2 := math.Float64frombits(v)
+			v2 := float64(math.Float64frombits(v))
 			m.CpuPercentage = &v2
 			hasFields[0] |= uint64(0x00000004)
 		case 4:
@@ -495,6 +499,9 @@ func (m *ContainerMetric) Unmarshal(data []byte) error {
 			skippy, err := skipMetric(data[iNdEx:])
 			if err != nil {
 				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthMetric
 			}
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
@@ -567,10 +574,13 @@ func skipMetric(data []byte) (n int, err error) {
 				}
 			}
 			iNdEx += length
+			if length < 0 {
+				return 0, ErrInvalidLengthMetric
+			}
 			return iNdEx, nil
 		case 3:
 			for {
-				var wire uint64
+				var innerWire uint64
 				var start int = iNdEx
 				for shift := uint(0); ; shift += 7 {
 					if iNdEx >= l {
@@ -578,13 +588,13 @@ func skipMetric(data []byte) (n int, err error) {
 					}
 					b := data[iNdEx]
 					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
+					innerWire |= (uint64(b) & 0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				wireType := int(wire & 0x7)
-				if wireType == 4 {
+				innerWireType := int(innerWire & 0x7)
+				if innerWireType == 4 {
 					break
 				}
 				next, err := skipMetric(data[start:])
@@ -605,6 +615,11 @@ func skipMetric(data []byte) (n int, err error) {
 	}
 	panic("unreachable")
 }
+
+var (
+	ErrInvalidLengthMetric = fmt.Errorf("proto: negative length found during unmarshaling")
+)
+
 func (m *ValueMetric) Size() (n int) {
 	var l int
 	_ = l
@@ -692,7 +707,7 @@ func (m *ValueMetric) Marshal() (data []byte, err error) {
 	return data[:n], nil
 }
 
-func (m *ValueMetric) MarshalTo(data []byte) (n int, err error) {
+func (m *ValueMetric) MarshalTo(data []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -736,7 +751,7 @@ func (m *CounterEvent) Marshal() (data []byte, err error) {
 	return data[:n], nil
 }
 
-func (m *CounterEvent) MarshalTo(data []byte) (n int, err error) {
+func (m *CounterEvent) MarshalTo(data []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -777,7 +792,7 @@ func (m *ContainerMetric) Marshal() (data []byte, err error) {
 	return data[:n], nil
 }
 
-func (m *ContainerMetric) MarshalTo(data []byte) (n int, err error) {
+func (m *ContainerMetric) MarshalTo(data []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
