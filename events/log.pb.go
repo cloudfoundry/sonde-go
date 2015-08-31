@@ -9,9 +9,10 @@ import math "math"
 
 // discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
 
+import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
+
 import io "io"
 import fmt "fmt"
-import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -110,6 +111,138 @@ func (m *LogMessage) GetSourceInstance() string {
 
 func init() {
 	proto.RegisterEnum("events.LogMessage_MessageType", LogMessage_MessageType_name, LogMessage_MessageType_value)
+}
+func (m *LogMessage) Marshal() (data []byte, err error) {
+	size := m.Size()
+	data = make([]byte, size)
+	n, err := m.MarshalTo(data)
+	if err != nil {
+		return nil, err
+	}
+	return data[:n], nil
+}
+
+func (m *LogMessage) MarshalTo(data []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Message == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("message")
+	} else {
+		data[i] = 0xa
+		i++
+		i = encodeVarintLog(data, i, uint64(len(m.Message)))
+		i += copy(data[i:], m.Message)
+	}
+	if m.MessageType == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("message_type")
+	} else {
+		data[i] = 0x10
+		i++
+		i = encodeVarintLog(data, i, uint64(*m.MessageType))
+	}
+	if m.Timestamp == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("timestamp")
+	} else {
+		data[i] = 0x18
+		i++
+		i = encodeVarintLog(data, i, uint64(*m.Timestamp))
+	}
+	if m.AppId != nil {
+		data[i] = 0x22
+		i++
+		i = encodeVarintLog(data, i, uint64(len(*m.AppId)))
+		i += copy(data[i:], *m.AppId)
+	}
+	if m.SourceType != nil {
+		data[i] = 0x2a
+		i++
+		i = encodeVarintLog(data, i, uint64(len(*m.SourceType)))
+		i += copy(data[i:], *m.SourceType)
+	}
+	if m.SourceInstance != nil {
+		data[i] = 0x32
+		i++
+		i = encodeVarintLog(data, i, uint64(len(*m.SourceInstance)))
+		i += copy(data[i:], *m.SourceInstance)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(data[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func encodeFixed64Log(data []byte, offset int, v uint64) int {
+	data[offset] = uint8(v)
+	data[offset+1] = uint8(v >> 8)
+	data[offset+2] = uint8(v >> 16)
+	data[offset+3] = uint8(v >> 24)
+	data[offset+4] = uint8(v >> 32)
+	data[offset+5] = uint8(v >> 40)
+	data[offset+6] = uint8(v >> 48)
+	data[offset+7] = uint8(v >> 56)
+	return offset + 8
+}
+func encodeFixed32Log(data []byte, offset int, v uint32) int {
+	data[offset] = uint8(v)
+	data[offset+1] = uint8(v >> 8)
+	data[offset+2] = uint8(v >> 16)
+	data[offset+3] = uint8(v >> 24)
+	return offset + 4
+}
+func encodeVarintLog(data []byte, offset int, v uint64) int {
+	for v >= 1<<7 {
+		data[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	data[offset] = uint8(v)
+	return offset + 1
+}
+func (m *LogMessage) Size() (n int) {
+	var l int
+	_ = l
+	if m.Message != nil {
+		l = len(m.Message)
+		n += 1 + l + sovLog(uint64(l))
+	}
+	if m.MessageType != nil {
+		n += 1 + sovLog(uint64(*m.MessageType))
+	}
+	if m.Timestamp != nil {
+		n += 1 + sovLog(uint64(*m.Timestamp))
+	}
+	if m.AppId != nil {
+		l = len(*m.AppId)
+		n += 1 + l + sovLog(uint64(l))
+	}
+	if m.SourceType != nil {
+		l = len(*m.SourceType)
+		n += 1 + l + sovLog(uint64(l))
+	}
+	if m.SourceInstance != nil {
+		l = len(*m.SourceInstance)
+		n += 1 + l + sovLog(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func sovLog(x uint64) (n int) {
+	for {
+		n++
+		x >>= 7
+		if x == 0 {
+			break
+		}
+	}
+	return n
+}
+func sozLog(x uint64) (n int) {
+	return sovLog(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
 func (m *LogMessage) Unmarshal(data []byte) error {
 	var hasFields [1]uint64
@@ -210,6 +343,9 @@ func (m *LogMessage) Unmarshal(data []byte) error {
 				}
 			}
 			postIndex := iNdEx + int(stringLen)
+			if stringLen < 0 {
+				return ErrInvalidLengthLog
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -233,6 +369,9 @@ func (m *LogMessage) Unmarshal(data []byte) error {
 				}
 			}
 			postIndex := iNdEx + int(stringLen)
+			if stringLen < 0 {
+				return ErrInvalidLengthLog
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -256,6 +395,9 @@ func (m *LogMessage) Unmarshal(data []byte) error {
 				}
 			}
 			postIndex := iNdEx + int(stringLen)
+			if stringLen < 0 {
+				return ErrInvalidLengthLog
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -389,136 +531,3 @@ func skipLog(data []byte) (n int, err error) {
 var (
 	ErrInvalidLengthLog = fmt.Errorf("proto: negative length found during unmarshaling")
 )
-
-func (m *LogMessage) Size() (n int) {
-	var l int
-	_ = l
-	if m.Message != nil {
-		l = len(m.Message)
-		n += 1 + l + sovLog(uint64(l))
-	}
-	if m.MessageType != nil {
-		n += 1 + sovLog(uint64(*m.MessageType))
-	}
-	if m.Timestamp != nil {
-		n += 1 + sovLog(uint64(*m.Timestamp))
-	}
-	if m.AppId != nil {
-		l = len(*m.AppId)
-		n += 1 + l + sovLog(uint64(l))
-	}
-	if m.SourceType != nil {
-		l = len(*m.SourceType)
-		n += 1 + l + sovLog(uint64(l))
-	}
-	if m.SourceInstance != nil {
-		l = len(*m.SourceInstance)
-		n += 1 + l + sovLog(uint64(l))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
-func sovLog(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
-}
-func sozLog(x uint64) (n int) {
-	return sovLog(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *LogMessage) Marshal() (data []byte, err error) {
-	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
-	if err != nil {
-		return nil, err
-	}
-	return data[:n], nil
-}
-
-func (m *LogMessage) MarshalTo(data []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Message == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("message")
-	} else {
-		data[i] = 0xa
-		i++
-		i = encodeVarintLog(data, i, uint64(len(m.Message)))
-		i += copy(data[i:], m.Message)
-	}
-	if m.MessageType == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("message_type")
-	} else {
-		data[i] = 0x10
-		i++
-		i = encodeVarintLog(data, i, uint64(*m.MessageType))
-	}
-	if m.Timestamp == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("timestamp")
-	} else {
-		data[i] = 0x18
-		i++
-		i = encodeVarintLog(data, i, uint64(*m.Timestamp))
-	}
-	if m.AppId != nil {
-		data[i] = 0x22
-		i++
-		i = encodeVarintLog(data, i, uint64(len(*m.AppId)))
-		i += copy(data[i:], *m.AppId)
-	}
-	if m.SourceType != nil {
-		data[i] = 0x2a
-		i++
-		i = encodeVarintLog(data, i, uint64(len(*m.SourceType)))
-		i += copy(data[i:], *m.SourceType)
-	}
-	if m.SourceInstance != nil {
-		data[i] = 0x32
-		i++
-		i = encodeVarintLog(data, i, uint64(len(*m.SourceInstance)))
-		i += copy(data[i:], *m.SourceInstance)
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(data[i:], m.XXX_unrecognized)
-	}
-	return i, nil
-}
-
-func encodeFixed64Log(data []byte, offset int, v uint64) int {
-	data[offset] = uint8(v)
-	data[offset+1] = uint8(v >> 8)
-	data[offset+2] = uint8(v >> 16)
-	data[offset+3] = uint8(v >> 24)
-	data[offset+4] = uint8(v >> 32)
-	data[offset+5] = uint8(v >> 40)
-	data[offset+6] = uint8(v >> 48)
-	data[offset+7] = uint8(v >> 56)
-	return offset + 8
-}
-func encodeFixed32Log(data []byte, offset int, v uint32) int {
-	data[offset] = uint8(v)
-	data[offset+1] = uint8(v >> 8)
-	data[offset+2] = uint8(v >> 16)
-	data[offset+3] = uint8(v >> 24)
-	return offset + 4
-}
-func encodeVarintLog(data []byte, offset int, v uint64) int {
-	for v >= 1<<7 {
-		data[offset] = uint8(v&0x7f | 0x80)
-		v >>= 7
-		offset++
-	}
-	data[offset] = uint8(v)
-	return offset + 1
-}

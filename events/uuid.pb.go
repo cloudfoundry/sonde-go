@@ -9,9 +9,10 @@ import math "math"
 
 // discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
 
+import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
+
 import io "io"
 import fmt "fmt"
-import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -44,6 +45,96 @@ func (m *UUID) GetHigh() uint64 {
 	return 0
 }
 
+func (m *UUID) Marshal() (data []byte, err error) {
+	size := m.Size()
+	data = make([]byte, size)
+	n, err := m.MarshalTo(data)
+	if err != nil {
+		return nil, err
+	}
+	return data[:n], nil
+}
+
+func (m *UUID) MarshalTo(data []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Low == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("low")
+	} else {
+		data[i] = 0x8
+		i++
+		i = encodeVarintUuid(data, i, uint64(*m.Low))
+	}
+	if m.High == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("high")
+	} else {
+		data[i] = 0x10
+		i++
+		i = encodeVarintUuid(data, i, uint64(*m.High))
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(data[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func encodeFixed64Uuid(data []byte, offset int, v uint64) int {
+	data[offset] = uint8(v)
+	data[offset+1] = uint8(v >> 8)
+	data[offset+2] = uint8(v >> 16)
+	data[offset+3] = uint8(v >> 24)
+	data[offset+4] = uint8(v >> 32)
+	data[offset+5] = uint8(v >> 40)
+	data[offset+6] = uint8(v >> 48)
+	data[offset+7] = uint8(v >> 56)
+	return offset + 8
+}
+func encodeFixed32Uuid(data []byte, offset int, v uint32) int {
+	data[offset] = uint8(v)
+	data[offset+1] = uint8(v >> 8)
+	data[offset+2] = uint8(v >> 16)
+	data[offset+3] = uint8(v >> 24)
+	return offset + 4
+}
+func encodeVarintUuid(data []byte, offset int, v uint64) int {
+	for v >= 1<<7 {
+		data[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	data[offset] = uint8(v)
+	return offset + 1
+}
+func (m *UUID) Size() (n int) {
+	var l int
+	_ = l
+	if m.Low != nil {
+		n += 1 + sovUuid(uint64(*m.Low))
+	}
+	if m.High != nil {
+		n += 1 + sovUuid(uint64(*m.High))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func sovUuid(x uint64) (n int) {
+	for {
+		n++
+		x >>= 7
+		if x == 0 {
+			break
+		}
+	}
+	return n
+}
+func sozUuid(x uint64) (n int) {
+	return sovUuid(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
 func (m *UUID) Unmarshal(data []byte) error {
 	var hasFields [1]uint64
 	l := len(data)
@@ -224,94 +315,3 @@ func skipUuid(data []byte) (n int, err error) {
 var (
 	ErrInvalidLengthUuid = fmt.Errorf("proto: negative length found during unmarshaling")
 )
-
-func (m *UUID) Size() (n int) {
-	var l int
-	_ = l
-	if m.Low != nil {
-		n += 1 + sovUuid(uint64(*m.Low))
-	}
-	if m.High != nil {
-		n += 1 + sovUuid(uint64(*m.High))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
-func sovUuid(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
-}
-func sozUuid(x uint64) (n int) {
-	return sovUuid(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *UUID) Marshal() (data []byte, err error) {
-	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
-	if err != nil {
-		return nil, err
-	}
-	return data[:n], nil
-}
-
-func (m *UUID) MarshalTo(data []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Low == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("low")
-	} else {
-		data[i] = 0x8
-		i++
-		i = encodeVarintUuid(data, i, uint64(*m.Low))
-	}
-	if m.High == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("high")
-	} else {
-		data[i] = 0x10
-		i++
-		i = encodeVarintUuid(data, i, uint64(*m.High))
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(data[i:], m.XXX_unrecognized)
-	}
-	return i, nil
-}
-
-func encodeFixed64Uuid(data []byte, offset int, v uint64) int {
-	data[offset] = uint8(v)
-	data[offset+1] = uint8(v >> 8)
-	data[offset+2] = uint8(v >> 16)
-	data[offset+3] = uint8(v >> 24)
-	data[offset+4] = uint8(v >> 32)
-	data[offset+5] = uint8(v >> 40)
-	data[offset+6] = uint8(v >> 48)
-	data[offset+7] = uint8(v >> 56)
-	return offset + 8
-}
-func encodeFixed32Uuid(data []byte, offset int, v uint32) int {
-	data[offset] = uint8(v)
-	data[offset+1] = uint8(v >> 8)
-	data[offset+2] = uint8(v >> 16)
-	data[offset+3] = uint8(v >> 24)
-	return offset + 4
-}
-func encodeVarintUuid(data []byte, offset int, v uint64) int {
-	for v >= 1<<7 {
-		data[offset] = uint8(v&0x7f | 0x80)
-		v >>= 7
-		offset++
-	}
-	data[offset] = uint8(v)
-	return offset + 1
-}

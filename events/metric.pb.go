@@ -9,9 +9,10 @@ import math "math"
 
 // discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
 
+import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
+
 import io "io"
 import fmt "fmt"
-import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -132,6 +133,252 @@ func (m *ContainerMetric) GetDiskBytes() uint64 {
 	return 0
 }
 
+func (m *ValueMetric) Marshal() (data []byte, err error) {
+	size := m.Size()
+	data = make([]byte, size)
+	n, err := m.MarshalTo(data)
+	if err != nil {
+		return nil, err
+	}
+	return data[:n], nil
+}
+
+func (m *ValueMetric) MarshalTo(data []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Name == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("name")
+	} else {
+		data[i] = 0xa
+		i++
+		i = encodeVarintMetric(data, i, uint64(len(*m.Name)))
+		i += copy(data[i:], *m.Name)
+	}
+	if m.Value == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("value")
+	} else {
+		data[i] = 0x11
+		i++
+		i = encodeFixed64Metric(data, i, uint64(math.Float64bits(*m.Value)))
+	}
+	if m.Unit == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("unit")
+	} else {
+		data[i] = 0x1a
+		i++
+		i = encodeVarintMetric(data, i, uint64(len(*m.Unit)))
+		i += copy(data[i:], *m.Unit)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(data[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *CounterEvent) Marshal() (data []byte, err error) {
+	size := m.Size()
+	data = make([]byte, size)
+	n, err := m.MarshalTo(data)
+	if err != nil {
+		return nil, err
+	}
+	return data[:n], nil
+}
+
+func (m *CounterEvent) MarshalTo(data []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Name == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("name")
+	} else {
+		data[i] = 0xa
+		i++
+		i = encodeVarintMetric(data, i, uint64(len(*m.Name)))
+		i += copy(data[i:], *m.Name)
+	}
+	if m.Delta == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("delta")
+	} else {
+		data[i] = 0x10
+		i++
+		i = encodeVarintMetric(data, i, uint64(*m.Delta))
+	}
+	if m.Total != nil {
+		data[i] = 0x18
+		i++
+		i = encodeVarintMetric(data, i, uint64(*m.Total))
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(data[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *ContainerMetric) Marshal() (data []byte, err error) {
+	size := m.Size()
+	data = make([]byte, size)
+	n, err := m.MarshalTo(data)
+	if err != nil {
+		return nil, err
+	}
+	return data[:n], nil
+}
+
+func (m *ContainerMetric) MarshalTo(data []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.ApplicationId == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("applicationId")
+	} else {
+		data[i] = 0xa
+		i++
+		i = encodeVarintMetric(data, i, uint64(len(*m.ApplicationId)))
+		i += copy(data[i:], *m.ApplicationId)
+	}
+	if m.InstanceIndex == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("instanceIndex")
+	} else {
+		data[i] = 0x10
+		i++
+		i = encodeVarintMetric(data, i, uint64(*m.InstanceIndex))
+	}
+	if m.CpuPercentage == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("cpuPercentage")
+	} else {
+		data[i] = 0x19
+		i++
+		i = encodeFixed64Metric(data, i, uint64(math.Float64bits(*m.CpuPercentage)))
+	}
+	if m.MemoryBytes == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("memoryBytes")
+	} else {
+		data[i] = 0x20
+		i++
+		i = encodeVarintMetric(data, i, uint64(*m.MemoryBytes))
+	}
+	if m.DiskBytes == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("diskBytes")
+	} else {
+		data[i] = 0x28
+		i++
+		i = encodeVarintMetric(data, i, uint64(*m.DiskBytes))
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(data[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func encodeFixed64Metric(data []byte, offset int, v uint64) int {
+	data[offset] = uint8(v)
+	data[offset+1] = uint8(v >> 8)
+	data[offset+2] = uint8(v >> 16)
+	data[offset+3] = uint8(v >> 24)
+	data[offset+4] = uint8(v >> 32)
+	data[offset+5] = uint8(v >> 40)
+	data[offset+6] = uint8(v >> 48)
+	data[offset+7] = uint8(v >> 56)
+	return offset + 8
+}
+func encodeFixed32Metric(data []byte, offset int, v uint32) int {
+	data[offset] = uint8(v)
+	data[offset+1] = uint8(v >> 8)
+	data[offset+2] = uint8(v >> 16)
+	data[offset+3] = uint8(v >> 24)
+	return offset + 4
+}
+func encodeVarintMetric(data []byte, offset int, v uint64) int {
+	for v >= 1<<7 {
+		data[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	data[offset] = uint8(v)
+	return offset + 1
+}
+func (m *ValueMetric) Size() (n int) {
+	var l int
+	_ = l
+	if m.Name != nil {
+		l = len(*m.Name)
+		n += 1 + l + sovMetric(uint64(l))
+	}
+	if m.Value != nil {
+		n += 9
+	}
+	if m.Unit != nil {
+		l = len(*m.Unit)
+		n += 1 + l + sovMetric(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CounterEvent) Size() (n int) {
+	var l int
+	_ = l
+	if m.Name != nil {
+		l = len(*m.Name)
+		n += 1 + l + sovMetric(uint64(l))
+	}
+	if m.Delta != nil {
+		n += 1 + sovMetric(uint64(*m.Delta))
+	}
+	if m.Total != nil {
+		n += 1 + sovMetric(uint64(*m.Total))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContainerMetric) Size() (n int) {
+	var l int
+	_ = l
+	if m.ApplicationId != nil {
+		l = len(*m.ApplicationId)
+		n += 1 + l + sovMetric(uint64(l))
+	}
+	if m.InstanceIndex != nil {
+		n += 1 + sovMetric(uint64(*m.InstanceIndex))
+	}
+	if m.CpuPercentage != nil {
+		n += 9
+	}
+	if m.MemoryBytes != nil {
+		n += 1 + sovMetric(uint64(*m.MemoryBytes))
+	}
+	if m.DiskBytes != nil {
+		n += 1 + sovMetric(uint64(*m.DiskBytes))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func sovMetric(x uint64) (n int) {
+	for {
+		n++
+		x >>= 7
+		if x == 0 {
+			break
+		}
+	}
+	return n
+}
+func sozMetric(x uint64) (n int) {
+	return sovMetric(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
 func (m *ValueMetric) Unmarshal(data []byte) error {
 	var hasFields [1]uint64
 	l := len(data)
@@ -169,6 +416,9 @@ func (m *ValueMetric) Unmarshal(data []byte) error {
 				}
 			}
 			postIndex := iNdEx + int(stringLen)
+			if stringLen < 0 {
+				return ErrInvalidLengthMetric
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -213,6 +463,9 @@ func (m *ValueMetric) Unmarshal(data []byte) error {
 				}
 			}
 			postIndex := iNdEx + int(stringLen)
+			if stringLen < 0 {
+				return ErrInvalidLengthMetric
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -293,6 +546,9 @@ func (m *CounterEvent) Unmarshal(data []byte) error {
 				}
 			}
 			postIndex := iNdEx + int(stringLen)
+			if stringLen < 0 {
+				return ErrInvalidLengthMetric
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -405,6 +661,9 @@ func (m *ContainerMetric) Unmarshal(data []byte) error {
 				}
 			}
 			postIndex := iNdEx + int(stringLen)
+			if stringLen < 0 {
+				return ErrInvalidLengthMetric
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -619,250 +878,3 @@ func skipMetric(data []byte) (n int, err error) {
 var (
 	ErrInvalidLengthMetric = fmt.Errorf("proto: negative length found during unmarshaling")
 )
-
-func (m *ValueMetric) Size() (n int) {
-	var l int
-	_ = l
-	if m.Name != nil {
-		l = len(*m.Name)
-		n += 1 + l + sovMetric(uint64(l))
-	}
-	if m.Value != nil {
-		n += 9
-	}
-	if m.Unit != nil {
-		l = len(*m.Unit)
-		n += 1 + l + sovMetric(uint64(l))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
-func (m *CounterEvent) Size() (n int) {
-	var l int
-	_ = l
-	if m.Name != nil {
-		l = len(*m.Name)
-		n += 1 + l + sovMetric(uint64(l))
-	}
-	if m.Delta != nil {
-		n += 1 + sovMetric(uint64(*m.Delta))
-	}
-	if m.Total != nil {
-		n += 1 + sovMetric(uint64(*m.Total))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
-func (m *ContainerMetric) Size() (n int) {
-	var l int
-	_ = l
-	if m.ApplicationId != nil {
-		l = len(*m.ApplicationId)
-		n += 1 + l + sovMetric(uint64(l))
-	}
-	if m.InstanceIndex != nil {
-		n += 1 + sovMetric(uint64(*m.InstanceIndex))
-	}
-	if m.CpuPercentage != nil {
-		n += 9
-	}
-	if m.MemoryBytes != nil {
-		n += 1 + sovMetric(uint64(*m.MemoryBytes))
-	}
-	if m.DiskBytes != nil {
-		n += 1 + sovMetric(uint64(*m.DiskBytes))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
-func sovMetric(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
-}
-func sozMetric(x uint64) (n int) {
-	return sovMetric(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *ValueMetric) Marshal() (data []byte, err error) {
-	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
-	if err != nil {
-		return nil, err
-	}
-	return data[:n], nil
-}
-
-func (m *ValueMetric) MarshalTo(data []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Name == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("name")
-	} else {
-		data[i] = 0xa
-		i++
-		i = encodeVarintMetric(data, i, uint64(len(*m.Name)))
-		i += copy(data[i:], *m.Name)
-	}
-	if m.Value == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("value")
-	} else {
-		data[i] = 0x11
-		i++
-		i = encodeFixed64Metric(data, i, uint64(math.Float64bits(*m.Value)))
-	}
-	if m.Unit == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("unit")
-	} else {
-		data[i] = 0x1a
-		i++
-		i = encodeVarintMetric(data, i, uint64(len(*m.Unit)))
-		i += copy(data[i:], *m.Unit)
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(data[i:], m.XXX_unrecognized)
-	}
-	return i, nil
-}
-
-func (m *CounterEvent) Marshal() (data []byte, err error) {
-	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
-	if err != nil {
-		return nil, err
-	}
-	return data[:n], nil
-}
-
-func (m *CounterEvent) MarshalTo(data []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Name == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("name")
-	} else {
-		data[i] = 0xa
-		i++
-		i = encodeVarintMetric(data, i, uint64(len(*m.Name)))
-		i += copy(data[i:], *m.Name)
-	}
-	if m.Delta == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("delta")
-	} else {
-		data[i] = 0x10
-		i++
-		i = encodeVarintMetric(data, i, uint64(*m.Delta))
-	}
-	if m.Total != nil {
-		data[i] = 0x18
-		i++
-		i = encodeVarintMetric(data, i, uint64(*m.Total))
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(data[i:], m.XXX_unrecognized)
-	}
-	return i, nil
-}
-
-func (m *ContainerMetric) Marshal() (data []byte, err error) {
-	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
-	if err != nil {
-		return nil, err
-	}
-	return data[:n], nil
-}
-
-func (m *ContainerMetric) MarshalTo(data []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.ApplicationId == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("applicationId")
-	} else {
-		data[i] = 0xa
-		i++
-		i = encodeVarintMetric(data, i, uint64(len(*m.ApplicationId)))
-		i += copy(data[i:], *m.ApplicationId)
-	}
-	if m.InstanceIndex == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("instanceIndex")
-	} else {
-		data[i] = 0x10
-		i++
-		i = encodeVarintMetric(data, i, uint64(*m.InstanceIndex))
-	}
-	if m.CpuPercentage == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("cpuPercentage")
-	} else {
-		data[i] = 0x19
-		i++
-		i = encodeFixed64Metric(data, i, uint64(math.Float64bits(*m.CpuPercentage)))
-	}
-	if m.MemoryBytes == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("memoryBytes")
-	} else {
-		data[i] = 0x20
-		i++
-		i = encodeVarintMetric(data, i, uint64(*m.MemoryBytes))
-	}
-	if m.DiskBytes == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("diskBytes")
-	} else {
-		data[i] = 0x28
-		i++
-		i = encodeVarintMetric(data, i, uint64(*m.DiskBytes))
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(data[i:], m.XXX_unrecognized)
-	}
-	return i, nil
-}
-
-func encodeFixed64Metric(data []byte, offset int, v uint64) int {
-	data[offset] = uint8(v)
-	data[offset+1] = uint8(v >> 8)
-	data[offset+2] = uint8(v >> 16)
-	data[offset+3] = uint8(v >> 24)
-	data[offset+4] = uint8(v >> 32)
-	data[offset+5] = uint8(v >> 40)
-	data[offset+6] = uint8(v >> 48)
-	data[offset+7] = uint8(v >> 56)
-	return offset + 8
-}
-func encodeFixed32Metric(data []byte, offset int, v uint32) int {
-	data[offset] = uint8(v)
-	data[offset+1] = uint8(v >> 8)
-	data[offset+2] = uint8(v >> 16)
-	data[offset+3] = uint8(v >> 24)
-	return offset + 4
-}
-func encodeVarintMetric(data []byte, offset int, v uint64) int {
-	for v >= 1<<7 {
-		data[offset] = uint8(v&0x7f | 0x80)
-		v >>= 7
-		offset++
-	}
-	data[offset] = uint8(v)
-	return offset + 1
-}

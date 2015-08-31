@@ -23,9 +23,10 @@ import math "math"
 
 // discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
 
+import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
+
 import io "io"
 import fmt "fmt"
-import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -217,6 +218,260 @@ func (m *Envelope) GetContainerMetric() *ContainerMetric {
 func init() {
 	proto.RegisterEnum("events.Envelope_EventType", Envelope_EventType_name, Envelope_EventType_value)
 }
+func (m *Envelope) Marshal() (data []byte, err error) {
+	size := m.Size()
+	data = make([]byte, size)
+	n, err := m.MarshalTo(data)
+	if err != nil {
+		return nil, err
+	}
+	return data[:n], nil
+}
+
+func (m *Envelope) MarshalTo(data []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Origin == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("origin")
+	} else {
+		data[i] = 0xa
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Origin)))
+		i += copy(data[i:], *m.Origin)
+	}
+	if m.EventType == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("eventType")
+	} else {
+		data[i] = 0x10
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(*m.EventType))
+	}
+	if m.HttpStart != nil {
+		data[i] = 0x22
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(m.HttpStart.Size()))
+		n1, err := m.HttpStart.MarshalTo(data[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n1
+	}
+	if m.HttpStop != nil {
+		data[i] = 0x2a
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(m.HttpStop.Size()))
+		n2, err := m.HttpStop.MarshalTo(data[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n2
+	}
+	if m.Timestamp != nil {
+		data[i] = 0x30
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(*m.Timestamp))
+	}
+	if m.HttpStartStop != nil {
+		data[i] = 0x3a
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(m.HttpStartStop.Size()))
+		n3, err := m.HttpStartStop.MarshalTo(data[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n3
+	}
+	if m.LogMessage != nil {
+		data[i] = 0x42
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(m.LogMessage.Size()))
+		n4, err := m.LogMessage.MarshalTo(data[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n4
+	}
+	if m.ValueMetric != nil {
+		data[i] = 0x4a
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(m.ValueMetric.Size()))
+		n5, err := m.ValueMetric.MarshalTo(data[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n5
+	}
+	if m.CounterEvent != nil {
+		data[i] = 0x52
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(m.CounterEvent.Size()))
+		n6, err := m.CounterEvent.MarshalTo(data[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n6
+	}
+	if m.Error != nil {
+		data[i] = 0x5a
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(m.Error.Size()))
+		n7, err := m.Error.MarshalTo(data[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n7
+	}
+	if m.ContainerMetric != nil {
+		data[i] = 0x62
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(m.ContainerMetric.Size()))
+		n8, err := m.ContainerMetric.MarshalTo(data[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n8
+	}
+	if m.Deployment != nil {
+		data[i] = 0x6a
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Deployment)))
+		i += copy(data[i:], *m.Deployment)
+	}
+	if m.Job != nil {
+		data[i] = 0x72
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Job)))
+		i += copy(data[i:], *m.Job)
+	}
+	if m.Index != nil {
+		data[i] = 0x7a
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Index)))
+		i += copy(data[i:], *m.Index)
+	}
+	if m.Ip != nil {
+		data[i] = 0x82
+		i++
+		data[i] = 0x1
+		i++
+		i = encodeVarintEnvelope(data, i, uint64(len(*m.Ip)))
+		i += copy(data[i:], *m.Ip)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(data[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func encodeFixed64Envelope(data []byte, offset int, v uint64) int {
+	data[offset] = uint8(v)
+	data[offset+1] = uint8(v >> 8)
+	data[offset+2] = uint8(v >> 16)
+	data[offset+3] = uint8(v >> 24)
+	data[offset+4] = uint8(v >> 32)
+	data[offset+5] = uint8(v >> 40)
+	data[offset+6] = uint8(v >> 48)
+	data[offset+7] = uint8(v >> 56)
+	return offset + 8
+}
+func encodeFixed32Envelope(data []byte, offset int, v uint32) int {
+	data[offset] = uint8(v)
+	data[offset+1] = uint8(v >> 8)
+	data[offset+2] = uint8(v >> 16)
+	data[offset+3] = uint8(v >> 24)
+	return offset + 4
+}
+func encodeVarintEnvelope(data []byte, offset int, v uint64) int {
+	for v >= 1<<7 {
+		data[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	data[offset] = uint8(v)
+	return offset + 1
+}
+func (m *Envelope) Size() (n int) {
+	var l int
+	_ = l
+	if m.Origin != nil {
+		l = len(*m.Origin)
+		n += 1 + l + sovEnvelope(uint64(l))
+	}
+	if m.EventType != nil {
+		n += 1 + sovEnvelope(uint64(*m.EventType))
+	}
+	if m.HttpStart != nil {
+		l = m.HttpStart.Size()
+		n += 1 + l + sovEnvelope(uint64(l))
+	}
+	if m.HttpStop != nil {
+		l = m.HttpStop.Size()
+		n += 1 + l + sovEnvelope(uint64(l))
+	}
+	if m.Timestamp != nil {
+		n += 1 + sovEnvelope(uint64(*m.Timestamp))
+	}
+	if m.HttpStartStop != nil {
+		l = m.HttpStartStop.Size()
+		n += 1 + l + sovEnvelope(uint64(l))
+	}
+	if m.LogMessage != nil {
+		l = m.LogMessage.Size()
+		n += 1 + l + sovEnvelope(uint64(l))
+	}
+	if m.ValueMetric != nil {
+		l = m.ValueMetric.Size()
+		n += 1 + l + sovEnvelope(uint64(l))
+	}
+	if m.CounterEvent != nil {
+		l = m.CounterEvent.Size()
+		n += 1 + l + sovEnvelope(uint64(l))
+	}
+	if m.Error != nil {
+		l = m.Error.Size()
+		n += 1 + l + sovEnvelope(uint64(l))
+	}
+	if m.ContainerMetric != nil {
+		l = m.ContainerMetric.Size()
+		n += 1 + l + sovEnvelope(uint64(l))
+	}
+	if m.Deployment != nil {
+		l = len(*m.Deployment)
+		n += 1 + l + sovEnvelope(uint64(l))
+	}
+	if m.Job != nil {
+		l = len(*m.Job)
+		n += 1 + l + sovEnvelope(uint64(l))
+	}
+	if m.Index != nil {
+		l = len(*m.Index)
+		n += 1 + l + sovEnvelope(uint64(l))
+	}
+	if m.Ip != nil {
+		l = len(*m.Ip)
+		n += 2 + l + sovEnvelope(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func sovEnvelope(x uint64) (n int) {
+	for {
+		n++
+		x >>= 7
+		if x == 0 {
+			break
+		}
+	}
+	return n
+}
+func sozEnvelope(x uint64) (n int) {
+	return sovEnvelope(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
 func (m *Envelope) Unmarshal(data []byte) error {
 	var hasFields [1]uint64
 	l := len(data)
@@ -254,6 +509,9 @@ func (m *Envelope) Unmarshal(data []byte) error {
 				}
 			}
 			postIndex := iNdEx + int(stringLen)
+			if stringLen < 0 {
+				return ErrInvalidLengthEnvelope
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -279,115 +537,6 @@ func (m *Envelope) Unmarshal(data []byte) error {
 			}
 			m.EventType = &v
 			hasFields[0] |= uint64(0x00000002)
-		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Timestamp", wireType)
-			}
-			var v int64
-			for shift := uint(0); ; shift += 7 {
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := data[iNdEx]
-				iNdEx++
-				v |= (int64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Timestamp = &v
-		case 13:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Deployment", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := data[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			postIndex := iNdEx + int(stringLen)
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			s := string(data[iNdEx:postIndex])
-			m.Deployment = &s
-			iNdEx = postIndex
-		case 14:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Job", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := data[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			postIndex := iNdEx + int(stringLen)
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			s := string(data[iNdEx:postIndex])
-			m.Job = &s
-			iNdEx = postIndex
-		case 15:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := data[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			postIndex := iNdEx + int(stringLen)
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			s := string(data[iNdEx:postIndex])
-			m.Index = &s
-			iNdEx = postIndex
-		case 16:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Ip", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := data[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			postIndex := iNdEx + int(stringLen)
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			s := string(data[iNdEx:postIndex])
-			m.Ip = &s
-			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field HttpStart", wireType)
@@ -448,6 +597,23 @@ func (m *Envelope) Unmarshal(data []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timestamp", wireType)
+			}
+			var v int64
+			for shift := uint(0); ; shift += 7 {
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[iNdEx]
+				iNdEx++
+				v |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Timestamp = &v
 		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field HttpStartStop", wireType)
@@ -628,6 +794,110 @@ func (m *Envelope) Unmarshal(data []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 13:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Deployment", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			postIndex := iNdEx + int(stringLen)
+			if stringLen < 0 {
+				return ErrInvalidLengthEnvelope
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			s := string(data[iNdEx:postIndex])
+			m.Deployment = &s
+			iNdEx = postIndex
+		case 14:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Job", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			postIndex := iNdEx + int(stringLen)
+			if stringLen < 0 {
+				return ErrInvalidLengthEnvelope
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			s := string(data[iNdEx:postIndex])
+			m.Job = &s
+			iNdEx = postIndex
+		case 15:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			postIndex := iNdEx + int(stringLen)
+			if stringLen < 0 {
+				return ErrInvalidLengthEnvelope
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			s := string(data[iNdEx:postIndex])
+			m.Index = &s
+			iNdEx = postIndex
+		case 16:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Ip", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			postIndex := iNdEx + int(stringLen)
+			if stringLen < 0 {
+				return ErrInvalidLengthEnvelope
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			s := string(data[iNdEx:postIndex])
+			m.Ip = &s
+			iNdEx = postIndex
 		default:
 			var sizeOfWire int
 			for {
@@ -752,258 +1022,3 @@ func skipEnvelope(data []byte) (n int, err error) {
 var (
 	ErrInvalidLengthEnvelope = fmt.Errorf("proto: negative length found during unmarshaling")
 )
-
-func (m *Envelope) Size() (n int) {
-	var l int
-	_ = l
-	if m.Origin != nil {
-		l = len(*m.Origin)
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
-	if m.EventType != nil {
-		n += 1 + sovEnvelope(uint64(*m.EventType))
-	}
-	if m.Timestamp != nil {
-		n += 1 + sovEnvelope(uint64(*m.Timestamp))
-	}
-	if m.Deployment != nil {
-		l = len(*m.Deployment)
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
-	if m.Job != nil {
-		l = len(*m.Job)
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
-	if m.Index != nil {
-		l = len(*m.Index)
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
-	if m.Ip != nil {
-		l = len(*m.Ip)
-		n += 2 + l + sovEnvelope(uint64(l))
-	}
-	if m.HttpStart != nil {
-		l = m.HttpStart.Size()
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
-	if m.HttpStop != nil {
-		l = m.HttpStop.Size()
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
-	if m.HttpStartStop != nil {
-		l = m.HttpStartStop.Size()
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
-	if m.LogMessage != nil {
-		l = m.LogMessage.Size()
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
-	if m.ValueMetric != nil {
-		l = m.ValueMetric.Size()
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
-	if m.CounterEvent != nil {
-		l = m.CounterEvent.Size()
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
-	if m.Error != nil {
-		l = m.Error.Size()
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
-	if m.ContainerMetric != nil {
-		l = m.ContainerMetric.Size()
-		n += 1 + l + sovEnvelope(uint64(l))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
-	return n
-}
-
-func sovEnvelope(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
-}
-func sozEnvelope(x uint64) (n int) {
-	return sovEnvelope(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *Envelope) Marshal() (data []byte, err error) {
-	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
-	if err != nil {
-		return nil, err
-	}
-	return data[:n], nil
-}
-
-func (m *Envelope) MarshalTo(data []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Origin == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("origin")
-	} else {
-		data[i] = 0xa
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Origin)))
-		i += copy(data[i:], *m.Origin)
-	}
-	if m.EventType == nil {
-		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("eventType")
-	} else {
-		data[i] = 0x10
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(*m.EventType))
-	}
-	if m.HttpStart != nil {
-		data[i] = 0x22
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.HttpStart.Size()))
-		n1, err := m.HttpStart.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n1
-	}
-	if m.HttpStop != nil {
-		data[i] = 0x2a
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.HttpStop.Size()))
-		n2, err := m.HttpStop.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n2
-	}
-	if m.Timestamp != nil {
-		data[i] = 0x30
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(*m.Timestamp))
-	}
-	if m.HttpStartStop != nil {
-		data[i] = 0x3a
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.HttpStartStop.Size()))
-		n3, err := m.HttpStartStop.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n3
-	}
-	if m.LogMessage != nil {
-		data[i] = 0x42
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.LogMessage.Size()))
-		n4, err := m.LogMessage.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n4
-	}
-	if m.ValueMetric != nil {
-		data[i] = 0x4a
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.ValueMetric.Size()))
-		n5, err := m.ValueMetric.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n5
-	}
-	if m.CounterEvent != nil {
-		data[i] = 0x52
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.CounterEvent.Size()))
-		n6, err := m.CounterEvent.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n6
-	}
-	if m.Error != nil {
-		data[i] = 0x5a
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.Error.Size()))
-		n7, err := m.Error.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n7
-	}
-	if m.ContainerMetric != nil {
-		data[i] = 0x62
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(m.ContainerMetric.Size()))
-		n8, err := m.ContainerMetric.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n8
-	}
-	if m.Deployment != nil {
-		data[i] = 0x6a
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Deployment)))
-		i += copy(data[i:], *m.Deployment)
-	}
-	if m.Job != nil {
-		data[i] = 0x72
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Job)))
-		i += copy(data[i:], *m.Job)
-	}
-	if m.Index != nil {
-		data[i] = 0x7a
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Index)))
-		i += copy(data[i:], *m.Index)
-	}
-	if m.Ip != nil {
-		data[i] = 0x82
-		i++
-		data[i] = 0x1
-		i++
-		i = encodeVarintEnvelope(data, i, uint64(len(*m.Ip)))
-		i += copy(data[i:], *m.Ip)
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(data[i:], m.XXX_unrecognized)
-	}
-	return i, nil
-}
-
-func encodeFixed64Envelope(data []byte, offset int, v uint64) int {
-	data[offset] = uint8(v)
-	data[offset+1] = uint8(v >> 8)
-	data[offset+2] = uint8(v >> 16)
-	data[offset+3] = uint8(v >> 24)
-	data[offset+4] = uint8(v >> 32)
-	data[offset+5] = uint8(v >> 40)
-	data[offset+6] = uint8(v >> 48)
-	data[offset+7] = uint8(v >> 56)
-	return offset + 8
-}
-func encodeFixed32Envelope(data []byte, offset int, v uint32) int {
-	data[offset] = uint8(v)
-	data[offset+1] = uint8(v >> 8)
-	data[offset+2] = uint8(v >> 16)
-	data[offset+3] = uint8(v >> 24)
-	return offset + 4
-}
-func encodeVarintEnvelope(data []byte, offset int, v uint64) int {
-	for v >= 1<<7 {
-		data[offset] = uint8(v&0x7f | 0x80)
-		v >>= 7
-		offset++
-	}
-	data[offset] = uint8(v)
-	return offset + 1
-}
