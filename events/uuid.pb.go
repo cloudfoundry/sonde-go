@@ -5,17 +5,17 @@
 package events
 
 import proto "github.com/gogo/protobuf/proto"
+import fmt "fmt"
 import math "math"
-
-// discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
+import _ "github.com/gogo/protobuf/gogoproto"
 
 import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 
 import io "io"
-import fmt "fmt"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = fmt.Errorf
 var _ = math.Inf
 
 // / Type representing a 128-bit UUID.
@@ -45,6 +45,9 @@ func (m *UUID) GetHigh() uint64 {
 	return 0
 }
 
+func init() {
+	proto.RegisterType((*UUID)(nil), "events.UUID")
+}
 func (m *UUID) Marshal() (data []byte, err error) {
 	size := m.Size()
 	data = make([]byte, size)
@@ -140,8 +143,12 @@ func (m *UUID) Unmarshal(data []byte) error {
 	l := len(data)
 	iNdEx := 0
 	for iNdEx < l {
+		preIndex := iNdEx
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowUuid
+			}
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
@@ -154,6 +161,12 @@ func (m *UUID) Unmarshal(data []byte) error {
 		}
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UUID: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UUID: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
@@ -161,6 +174,9 @@ func (m *UUID) Unmarshal(data []byte) error {
 			}
 			var v uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowUuid
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -179,6 +195,9 @@ func (m *UUID) Unmarshal(data []byte) error {
 			}
 			var v uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowUuid
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -192,15 +211,7 @@ func (m *UUID) Unmarshal(data []byte) error {
 			m.High = &v
 			hasFields[0] |= uint64(0x00000002)
 		default:
-			var sizeOfWire int
-			for {
-				sizeOfWire++
-				wire >>= 7
-				if wire == 0 {
-					break
-				}
-			}
-			iNdEx -= sizeOfWire
+			iNdEx = preIndex
 			skippy, err := skipUuid(data[iNdEx:])
 			if err != nil {
 				return err
@@ -222,6 +233,9 @@ func (m *UUID) Unmarshal(data []byte) error {
 		return github_com_gogo_protobuf_proto.NewRequiredNotSetError("high")
 	}
 
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
 	return nil
 }
 func skipUuid(data []byte) (n int, err error) {
@@ -230,6 +244,9 @@ func skipUuid(data []byte) (n int, err error) {
 	for iNdEx < l {
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowUuid
+			}
 			if iNdEx >= l {
 				return 0, io.ErrUnexpectedEOF
 			}
@@ -243,7 +260,10 @@ func skipUuid(data []byte) (n int, err error) {
 		wireType := int(wire & 0x7)
 		switch wireType {
 		case 0:
-			for {
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowUuid
+				}
 				if iNdEx >= l {
 					return 0, io.ErrUnexpectedEOF
 				}
@@ -259,6 +279,9 @@ func skipUuid(data []byte) (n int, err error) {
 		case 2:
 			var length int
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowUuid
+				}
 				if iNdEx >= l {
 					return 0, io.ErrUnexpectedEOF
 				}
@@ -279,6 +302,9 @@ func skipUuid(data []byte) (n int, err error) {
 				var innerWire uint64
 				var start int = iNdEx
 				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return 0, ErrIntOverflowUuid
+					}
 					if iNdEx >= l {
 						return 0, io.ErrUnexpectedEOF
 					}
@@ -314,4 +340,5 @@ func skipUuid(data []byte) (n int, err error) {
 
 var (
 	ErrInvalidLengthUuid = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowUuid   = fmt.Errorf("proto: integer overflow")
 )

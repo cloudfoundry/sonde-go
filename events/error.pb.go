@@ -5,17 +5,17 @@
 package events
 
 import proto "github.com/gogo/protobuf/proto"
+import fmt "fmt"
 import math "math"
-
-// discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
+import _ "github.com/gogo/protobuf/gogoproto"
 
 import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 
 import io "io"
-import fmt "fmt"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = fmt.Errorf
 var _ = math.Inf
 
 // / An Error event represents an error in the originating process.
@@ -51,6 +51,9 @@ func (m *Error) GetMessage() string {
 	return ""
 }
 
+func init() {
+	proto.RegisterType((*Error)(nil), "events.Error")
+}
 func (m *Error) Marshal() (data []byte, err error) {
 	size := m.Size()
 	data = make([]byte, size)
@@ -160,8 +163,12 @@ func (m *Error) Unmarshal(data []byte) error {
 	l := len(data)
 	iNdEx := 0
 	for iNdEx < l {
+		preIndex := iNdEx
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowError
+			}
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
@@ -174,6 +181,12 @@ func (m *Error) Unmarshal(data []byte) error {
 		}
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Error: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Error: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
@@ -181,6 +194,9 @@ func (m *Error) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowError
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -209,6 +225,9 @@ func (m *Error) Unmarshal(data []byte) error {
 			}
 			var v int32
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowError
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -227,6 +246,9 @@ func (m *Error) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowError
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -250,15 +272,7 @@ func (m *Error) Unmarshal(data []byte) error {
 			iNdEx = postIndex
 			hasFields[0] |= uint64(0x00000004)
 		default:
-			var sizeOfWire int
-			for {
-				sizeOfWire++
-				wire >>= 7
-				if wire == 0 {
-					break
-				}
-			}
-			iNdEx -= sizeOfWire
+			iNdEx = preIndex
 			skippy, err := skipError(data[iNdEx:])
 			if err != nil {
 				return err
@@ -283,6 +297,9 @@ func (m *Error) Unmarshal(data []byte) error {
 		return github_com_gogo_protobuf_proto.NewRequiredNotSetError("message")
 	}
 
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
 	return nil
 }
 func skipError(data []byte) (n int, err error) {
@@ -291,6 +308,9 @@ func skipError(data []byte) (n int, err error) {
 	for iNdEx < l {
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowError
+			}
 			if iNdEx >= l {
 				return 0, io.ErrUnexpectedEOF
 			}
@@ -304,7 +324,10 @@ func skipError(data []byte) (n int, err error) {
 		wireType := int(wire & 0x7)
 		switch wireType {
 		case 0:
-			for {
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowError
+				}
 				if iNdEx >= l {
 					return 0, io.ErrUnexpectedEOF
 				}
@@ -320,6 +343,9 @@ func skipError(data []byte) (n int, err error) {
 		case 2:
 			var length int
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowError
+				}
 				if iNdEx >= l {
 					return 0, io.ErrUnexpectedEOF
 				}
@@ -340,6 +366,9 @@ func skipError(data []byte) (n int, err error) {
 				var innerWire uint64
 				var start int = iNdEx
 				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return 0, ErrIntOverflowError
+					}
 					if iNdEx >= l {
 						return 0, io.ErrUnexpectedEOF
 					}
@@ -375,4 +404,5 @@ func skipError(data []byte) (n int, err error) {
 
 var (
 	ErrInvalidLengthError = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowError   = fmt.Errorf("proto: integer overflow")
 )

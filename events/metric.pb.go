@@ -5,17 +5,17 @@
 package events
 
 import proto "github.com/gogo/protobuf/proto"
+import fmt "fmt"
 import math "math"
-
-// discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
+import _ "github.com/gogo/protobuf/gogoproto"
 
 import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 
 import io "io"
-import fmt "fmt"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = fmt.Errorf
 var _ = math.Inf
 
 // / A ValueMetric indicates the value of a metric at an instant in time.
@@ -133,6 +133,11 @@ func (m *ContainerMetric) GetDiskBytes() uint64 {
 	return 0
 }
 
+func init() {
+	proto.RegisterType((*ValueMetric)(nil), "events.ValueMetric")
+	proto.RegisterType((*CounterEvent)(nil), "events.CounterEvent")
+	proto.RegisterType((*ContainerMetric)(nil), "events.ContainerMetric")
+}
 func (m *ValueMetric) Marshal() (data []byte, err error) {
 	size := m.Size()
 	data = make([]byte, size)
@@ -161,7 +166,7 @@ func (m *ValueMetric) MarshalTo(data []byte) (int, error) {
 	} else {
 		data[i] = 0x11
 		i++
-		i = encodeFixed64Metric(data, i, uint64(math.Float64bits(*m.Value)))
+		i = encodeFixed64Metric(data, i, uint64(math.Float64bits(float64(*m.Value))))
 	}
 	if m.Unit == nil {
 		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("unit")
@@ -253,7 +258,7 @@ func (m *ContainerMetric) MarshalTo(data []byte) (int, error) {
 	} else {
 		data[i] = 0x19
 		i++
-		i = encodeFixed64Metric(data, i, uint64(math.Float64bits(*m.CpuPercentage)))
+		i = encodeFixed64Metric(data, i, uint64(math.Float64bits(float64(*m.CpuPercentage))))
 	}
 	if m.MemoryBytes == nil {
 		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("memoryBytes")
@@ -384,8 +389,12 @@ func (m *ValueMetric) Unmarshal(data []byte) error {
 	l := len(data)
 	iNdEx := 0
 	for iNdEx < l {
+		preIndex := iNdEx
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMetric
+			}
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
@@ -398,6 +407,12 @@ func (m *ValueMetric) Unmarshal(data []byte) error {
 		}
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ValueMetric: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ValueMetric: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
@@ -405,6 +420,9 @@ func (m *ValueMetric) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMetric
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -453,6 +471,9 @@ func (m *ValueMetric) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMetric
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -476,15 +497,7 @@ func (m *ValueMetric) Unmarshal(data []byte) error {
 			iNdEx = postIndex
 			hasFields[0] |= uint64(0x00000004)
 		default:
-			var sizeOfWire int
-			for {
-				sizeOfWire++
-				wire >>= 7
-				if wire == 0 {
-					break
-				}
-			}
-			iNdEx -= sizeOfWire
+			iNdEx = preIndex
 			skippy, err := skipMetric(data[iNdEx:])
 			if err != nil {
 				return err
@@ -509,6 +522,9 @@ func (m *ValueMetric) Unmarshal(data []byte) error {
 		return github_com_gogo_protobuf_proto.NewRequiredNotSetError("unit")
 	}
 
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
 	return nil
 }
 func (m *CounterEvent) Unmarshal(data []byte) error {
@@ -516,8 +532,12 @@ func (m *CounterEvent) Unmarshal(data []byte) error {
 	l := len(data)
 	iNdEx := 0
 	for iNdEx < l {
+		preIndex := iNdEx
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMetric
+			}
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
@@ -530,6 +550,12 @@ func (m *CounterEvent) Unmarshal(data []byte) error {
 		}
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CounterEvent: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CounterEvent: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
@@ -537,6 +563,9 @@ func (m *CounterEvent) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMetric
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -565,6 +594,9 @@ func (m *CounterEvent) Unmarshal(data []byte) error {
 			}
 			var v uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMetric
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -583,6 +615,9 @@ func (m *CounterEvent) Unmarshal(data []byte) error {
 			}
 			var v uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMetric
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -595,15 +630,7 @@ func (m *CounterEvent) Unmarshal(data []byte) error {
 			}
 			m.Total = &v
 		default:
-			var sizeOfWire int
-			for {
-				sizeOfWire++
-				wire >>= 7
-				if wire == 0 {
-					break
-				}
-			}
-			iNdEx -= sizeOfWire
+			iNdEx = preIndex
 			skippy, err := skipMetric(data[iNdEx:])
 			if err != nil {
 				return err
@@ -625,6 +652,9 @@ func (m *CounterEvent) Unmarshal(data []byte) error {
 		return github_com_gogo_protobuf_proto.NewRequiredNotSetError("delta")
 	}
 
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
 	return nil
 }
 func (m *ContainerMetric) Unmarshal(data []byte) error {
@@ -632,8 +662,12 @@ func (m *ContainerMetric) Unmarshal(data []byte) error {
 	l := len(data)
 	iNdEx := 0
 	for iNdEx < l {
+		preIndex := iNdEx
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMetric
+			}
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
@@ -646,6 +680,12 @@ func (m *ContainerMetric) Unmarshal(data []byte) error {
 		}
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContainerMetric: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContainerMetric: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
@@ -653,6 +693,9 @@ func (m *ContainerMetric) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMetric
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -681,6 +724,9 @@ func (m *ContainerMetric) Unmarshal(data []byte) error {
 			}
 			var v int32
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMetric
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -719,6 +765,9 @@ func (m *ContainerMetric) Unmarshal(data []byte) error {
 			}
 			var v uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMetric
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -737,6 +786,9 @@ func (m *ContainerMetric) Unmarshal(data []byte) error {
 			}
 			var v uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMetric
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -750,15 +802,7 @@ func (m *ContainerMetric) Unmarshal(data []byte) error {
 			m.DiskBytes = &v
 			hasFields[0] |= uint64(0x00000010)
 		default:
-			var sizeOfWire int
-			for {
-				sizeOfWire++
-				wire >>= 7
-				if wire == 0 {
-					break
-				}
-			}
-			iNdEx -= sizeOfWire
+			iNdEx = preIndex
 			skippy, err := skipMetric(data[iNdEx:])
 			if err != nil {
 				return err
@@ -789,6 +833,9 @@ func (m *ContainerMetric) Unmarshal(data []byte) error {
 		return github_com_gogo_protobuf_proto.NewRequiredNotSetError("diskBytes")
 	}
 
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
 	return nil
 }
 func skipMetric(data []byte) (n int, err error) {
@@ -797,6 +844,9 @@ func skipMetric(data []byte) (n int, err error) {
 	for iNdEx < l {
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowMetric
+			}
 			if iNdEx >= l {
 				return 0, io.ErrUnexpectedEOF
 			}
@@ -810,7 +860,10 @@ func skipMetric(data []byte) (n int, err error) {
 		wireType := int(wire & 0x7)
 		switch wireType {
 		case 0:
-			for {
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowMetric
+				}
 				if iNdEx >= l {
 					return 0, io.ErrUnexpectedEOF
 				}
@@ -826,6 +879,9 @@ func skipMetric(data []byte) (n int, err error) {
 		case 2:
 			var length int
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowMetric
+				}
 				if iNdEx >= l {
 					return 0, io.ErrUnexpectedEOF
 				}
@@ -846,6 +902,9 @@ func skipMetric(data []byte) (n int, err error) {
 				var innerWire uint64
 				var start int = iNdEx
 				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return 0, ErrIntOverflowMetric
+					}
 					if iNdEx >= l {
 						return 0, io.ErrUnexpectedEOF
 					}
@@ -881,4 +940,5 @@ func skipMetric(data []byte) (n int, err error) {
 
 var (
 	ErrInvalidLengthMetric = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowMetric   = fmt.Errorf("proto: integer overflow")
 )

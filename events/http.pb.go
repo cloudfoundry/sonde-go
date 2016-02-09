@@ -5,17 +5,17 @@
 package events
 
 import proto "github.com/gogo/protobuf/proto"
+import fmt "fmt"
 import math "math"
-
-// discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto/gogo.pb"
+import _ "github.com/gogo/protobuf/gogoproto"
 
 import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 
 import io "io"
-import fmt "fmt"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = fmt.Errorf
 var _ = math.Inf
 
 // / Type of peer handling request.
@@ -488,6 +488,9 @@ func (m *HttpStartStop) GetInstanceId() string {
 }
 
 func init() {
+	proto.RegisterType((*HttpStart)(nil), "events.HttpStart")
+	proto.RegisterType((*HttpStop)(nil), "events.HttpStop")
+	proto.RegisterType((*HttpStartStop)(nil), "events.HttpStartStop")
 	proto.RegisterEnum("events.PeerType", PeerType_name, PeerType_value)
 	proto.RegisterEnum("events.Method", Method_name, Method_value)
 }
@@ -501,7 +504,7 @@ func (m *HttpStart) Marshal() (data []byte, err error) {
 	return data[:n], nil
 }
 
-func (m *HttpStart) MarshalTo(data []byte) (n int, err error) {
+func (m *HttpStart) MarshalTo(data []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -610,7 +613,7 @@ func (m *HttpStop) Marshal() (data []byte, err error) {
 	return data[:n], nil
 }
 
-func (m *HttpStop) MarshalTo(data []byte) (n int, err error) {
+func (m *HttpStop) MarshalTo(data []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -689,7 +692,7 @@ func (m *HttpStartStop) Marshal() (data []byte, err error) {
 	return data[:n], nil
 }
 
-func (m *HttpStartStop) MarshalTo(data []byte) (n int, err error) {
+func (m *HttpStartStop) MarshalTo(data []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -980,8 +983,12 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 	l := len(data)
 	iNdEx := 0
 	for iNdEx < l {
+		preIndex := iNdEx
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowHttp
+			}
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
@@ -994,6 +1001,12 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 		}
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: HttpStart: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: HttpStart: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
@@ -1001,6 +1014,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			}
 			var v int64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1019,6 +1035,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1028,6 +1047,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 				if b < 0x80 {
 					break
 				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttp
 			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
@@ -1047,6 +1069,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			}
 			var v PeerType
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1065,6 +1090,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			}
 			var v Method
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1083,6 +1111,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1093,7 +1124,11 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			postIndex := iNdEx + int(stringLen)
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttp
+			}
+			postIndex := iNdEx + intStringLen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1107,6 +1142,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1117,7 +1155,11 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			postIndex := iNdEx + int(stringLen)
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttp
+			}
+			postIndex := iNdEx + intStringLen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1131,6 +1173,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1141,7 +1186,11 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			postIndex := iNdEx + int(stringLen)
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttp
+			}
+			postIndex := iNdEx + intStringLen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1155,6 +1204,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1164,6 +1216,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 				if b < 0x80 {
 					break
 				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttp
 			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
@@ -1182,6 +1237,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1191,6 +1249,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 				if b < 0x80 {
 					break
 				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttp
 			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
@@ -1209,6 +1270,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			}
 			var v int32
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1226,6 +1290,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1236,7 +1303,11 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			postIndex := iNdEx + int(stringLen)
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttp
+			}
+			postIndex := iNdEx + intStringLen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1244,18 +1315,13 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			m.InstanceId = &s
 			iNdEx = postIndex
 		default:
-			var sizeOfWire int
-			for {
-				sizeOfWire++
-				wire >>= 7
-				if wire == 0 {
-					break
-				}
-			}
-			iNdEx -= sizeOfWire
+			iNdEx = preIndex
 			skippy, err := skipHttp(data[iNdEx:])
 			if err != nil {
 				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthHttp
 			}
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
@@ -1286,6 +1352,9 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 		return github_com_gogo_protobuf_proto.NewRequiredNotSetError("userAgent")
 	}
 
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
 	return nil
 }
 func (m *HttpStop) Unmarshal(data []byte) error {
@@ -1293,8 +1362,12 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 	l := len(data)
 	iNdEx := 0
 	for iNdEx < l {
+		preIndex := iNdEx
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowHttp
+			}
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1307,6 +1380,12 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 		}
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: HttpStop: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: HttpStop: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
@@ -1314,6 +1393,9 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 			}
 			var v int64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1332,6 +1414,9 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1342,7 +1427,11 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			postIndex := iNdEx + int(stringLen)
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttp
+			}
+			postIndex := iNdEx + intStringLen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1356,6 +1445,9 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1365,6 +1457,9 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 				if b < 0x80 {
 					break
 				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttp
 			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
@@ -1384,6 +1479,9 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 			}
 			var v PeerType
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1402,6 +1500,9 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 			}
 			var v int32
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1420,6 +1521,9 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 			}
 			var v int64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1438,6 +1542,9 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1447,6 +1554,9 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 				if b < 0x80 {
 					break
 				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttp
 			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
@@ -1460,18 +1570,13 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 			}
 			iNdEx = postIndex
 		default:
-			var sizeOfWire int
-			for {
-				sizeOfWire++
-				wire >>= 7
-				if wire == 0 {
-					break
-				}
-			}
-			iNdEx -= sizeOfWire
+			iNdEx = preIndex
 			skippy, err := skipHttp(data[iNdEx:])
 			if err != nil {
 				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthHttp
 			}
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
@@ -1499,6 +1604,9 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 		return github_com_gogo_protobuf_proto.NewRequiredNotSetError("contentLength")
 	}
 
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
 	return nil
 }
 func (m *HttpStartStop) Unmarshal(data []byte) error {
@@ -1506,8 +1614,12 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 	l := len(data)
 	iNdEx := 0
 	for iNdEx < l {
+		preIndex := iNdEx
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowHttp
+			}
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1520,6 +1632,12 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 		}
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: HttpStartStop: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: HttpStartStop: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
@@ -1527,6 +1645,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var v int64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1545,6 +1666,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var v int64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1563,6 +1687,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1572,6 +1699,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 				if b < 0x80 {
 					break
 				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttp
 			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
@@ -1591,6 +1721,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var v PeerType
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1609,6 +1742,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var v Method
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1627,6 +1763,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1637,7 +1776,11 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			postIndex := iNdEx + int(stringLen)
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttp
+			}
+			postIndex := iNdEx + intStringLen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1651,6 +1794,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1661,7 +1807,11 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			postIndex := iNdEx + int(stringLen)
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttp
+			}
+			postIndex := iNdEx + intStringLen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1675,6 +1825,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1685,7 +1838,11 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			postIndex := iNdEx + int(stringLen)
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttp
+			}
+			postIndex := iNdEx + intStringLen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1699,6 +1856,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var v int32
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1717,6 +1877,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var v int64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1735,6 +1898,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1744,6 +1910,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 				if b < 0x80 {
 					break
 				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHttp
 			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
@@ -1762,6 +1931,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var v int32
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1779,6 +1951,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
@@ -1789,7 +1964,11 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			postIndex := iNdEx + int(stringLen)
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthHttp
+			}
+			postIndex := iNdEx + intStringLen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1797,18 +1976,13 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			m.InstanceId = &s
 			iNdEx = postIndex
 		default:
-			var sizeOfWire int
-			for {
-				sizeOfWire++
-				wire >>= 7
-				if wire == 0 {
-					break
-				}
-			}
-			iNdEx -= sizeOfWire
+			iNdEx = preIndex
 			skippy, err := skipHttp(data[iNdEx:])
 			if err != nil {
 				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthHttp
 			}
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
@@ -1848,6 +2022,9 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 		return github_com_gogo_protobuf_proto.NewRequiredNotSetError("contentLength")
 	}
 
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
 	return nil
 }
 func skipHttp(data []byte) (n int, err error) {
@@ -1856,6 +2033,9 @@ func skipHttp(data []byte) (n int, err error) {
 	for iNdEx < l {
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowHttp
+			}
 			if iNdEx >= l {
 				return 0, io.ErrUnexpectedEOF
 			}
@@ -1869,7 +2049,10 @@ func skipHttp(data []byte) (n int, err error) {
 		wireType := int(wire & 0x7)
 		switch wireType {
 		case 0:
-			for {
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return 0, io.ErrUnexpectedEOF
 				}
@@ -1885,6 +2068,9 @@ func skipHttp(data []byte) (n int, err error) {
 		case 2:
 			var length int
 			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowHttp
+				}
 				if iNdEx >= l {
 					return 0, io.ErrUnexpectedEOF
 				}
@@ -1896,24 +2082,30 @@ func skipHttp(data []byte) (n int, err error) {
 				}
 			}
 			iNdEx += length
+			if length < 0 {
+				return 0, ErrInvalidLengthHttp
+			}
 			return iNdEx, nil
 		case 3:
 			for {
-				var wire uint64
+				var innerWire uint64
 				var start int = iNdEx
 				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return 0, ErrIntOverflowHttp
+					}
 					if iNdEx >= l {
 						return 0, io.ErrUnexpectedEOF
 					}
 					b := data[iNdEx]
 					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
+					innerWire |= (uint64(b) & 0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				wireType := int(wire & 0x7)
-				if wireType == 4 {
+				innerWireType := int(innerWire & 0x7)
+				if innerWireType == 4 {
 					break
 				}
 				next, err := skipHttp(data[start:])
@@ -1934,3 +2126,8 @@ func skipHttp(data []byte) (n int, err error) {
 	}
 	panic("unreachable")
 }
+
+var (
+	ErrInvalidLengthHttp = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowHttp   = fmt.Errorf("proto: integer overflow")
+)
