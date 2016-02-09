@@ -376,21 +376,21 @@ func (m *HttpStop) GetApplicationId() *UUID {
 
 // / An HttpStartStop event represents the whole lifecycle of an HTTP request.
 type HttpStartStop struct {
-	StartTimestamp   *int64    `protobuf:"varint,1,req,name=startTimestamp" json:"startTimestamp,omitempty"`
-	StopTimestamp    *int64    `protobuf:"varint,2,req,name=stopTimestamp" json:"stopTimestamp,omitempty"`
-	RequestId        *UUID     `protobuf:"bytes,3,req,name=requestId" json:"requestId,omitempty"`
-	PeerType         *PeerType `protobuf:"varint,4,req,name=peerType,enum=events.PeerType" json:"peerType,omitempty"`
-	Method           *Method   `protobuf:"varint,5,req,name=method,enum=events.Method" json:"method,omitempty"`
-	Uri              *string   `protobuf:"bytes,6,req,name=uri" json:"uri,omitempty"`
-	RemoteAddress    *string   `protobuf:"bytes,7,req,name=remoteAddress" json:"remoteAddress,omitempty"`
-	UserAgent        *string   `protobuf:"bytes,8,req,name=userAgent" json:"userAgent,omitempty"`
-	StatusCode       *int32    `protobuf:"varint,9,req,name=statusCode" json:"statusCode,omitempty"`
-	ContentLength    *int64    `protobuf:"varint,10,req,name=contentLength" json:"contentLength,omitempty"`
-	ParentRequestId  *UUID     `protobuf:"bytes,11,opt,name=parentRequestId" json:"parentRequestId,omitempty"`
-	ApplicationId    *UUID     `protobuf:"bytes,12,opt,name=applicationId" json:"applicationId,omitempty"`
-	InstanceIndex    *int32    `protobuf:"varint,13,opt,name=instanceIndex" json:"instanceIndex,omitempty"`
-	InstanceId       *string   `protobuf:"bytes,14,opt,name=instanceId" json:"instanceId,omitempty"`
-	XXX_unrecognized []byte    `json:"-"`
+	StartTimestamp *int64    `protobuf:"varint,1,req,name=startTimestamp" json:"startTimestamp,omitempty"`
+	StopTimestamp  *int64    `protobuf:"varint,2,req,name=stopTimestamp" json:"stopTimestamp,omitempty"`
+	RequestId      *UUID     `protobuf:"bytes,3,req,name=requestId" json:"requestId,omitempty"`
+	PeerType       *PeerType `protobuf:"varint,4,req,name=peerType,enum=events.PeerType" json:"peerType,omitempty"`
+	Method         *Method   `protobuf:"varint,5,req,name=method,enum=events.Method" json:"method,omitempty"`
+	Uri            *string   `protobuf:"bytes,6,req,name=uri" json:"uri,omitempty"`
+	RemoteAddress  *string   `protobuf:"bytes,7,req,name=remoteAddress" json:"remoteAddress,omitempty"`
+	UserAgent      *string   `protobuf:"bytes,8,req,name=userAgent" json:"userAgent,omitempty"`
+	StatusCode     *int32    `protobuf:"varint,9,req,name=statusCode" json:"statusCode,omitempty"`
+	ContentLength  *int64    `protobuf:"varint,10,req,name=contentLength" json:"contentLength,omitempty"`
+	// / 11 used to be ParentRequestID
+	ApplicationId    *UUID   `protobuf:"bytes,12,opt,name=applicationId" json:"applicationId,omitempty"`
+	InstanceIndex    *int32  `protobuf:"varint,13,opt,name=instanceIndex" json:"instanceIndex,omitempty"`
+	InstanceId       *string `protobuf:"bytes,14,opt,name=instanceId" json:"instanceId,omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (m *HttpStartStop) Reset()         { *m = HttpStartStop{} }
@@ -465,13 +465,6 @@ func (m *HttpStartStop) GetContentLength() int64 {
 		return *m.ContentLength
 	}
 	return 0
-}
-
-func (m *HttpStartStop) GetParentRequestId() *UUID {
-	if m != nil {
-		return m.ParentRequestId
-	}
-	return nil
 }
 
 func (m *HttpStartStop) GetApplicationId() *UUID {
@@ -783,25 +776,15 @@ func (m *HttpStartStop) MarshalTo(data []byte) (int, error) {
 		i++
 		i = encodeVarintHttp(data, i, uint64(*m.ContentLength))
 	}
-	if m.ParentRequestId != nil {
-		data[i] = 0x5a
-		i++
-		i = encodeVarintHttp(data, i, uint64(m.ParentRequestId.Size()))
-		n7, err := m.ParentRequestId.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n7
-	}
 	if m.ApplicationId != nil {
 		data[i] = 0x62
 		i++
 		i = encodeVarintHttp(data, i, uint64(m.ApplicationId.Size()))
-		n8, err := m.ApplicationId.MarshalTo(data[i:])
+		n7, err := m.ApplicationId.MarshalTo(data[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n8
+		i += n7
 	}
 	if m.InstanceIndex != nil {
 		data[i] = 0x68
@@ -965,10 +948,6 @@ func (m *HttpStartStop) Size() (n int) {
 	}
 	if m.ContentLength != nil {
 		n += 1 + sovHttp(uint64(*m.ContentLength))
-	}
-	if m.ParentRequestId != nil {
-		l = m.ParentRequestId.Size()
-		n += 1 + l + sovHttp(uint64(l))
 	}
 	if m.ApplicationId != nil {
 		l = m.ApplicationId.Size()
@@ -1914,39 +1893,6 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			m.ContentLength = &v
 			hasFields[0] |= uint64(0x00000200)
-		case 11:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ParentRequestId", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowHttp
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := data[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthHttp
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.ParentRequestId == nil {
-				m.ParentRequestId = &UUID{}
-			}
-			if err := m.ParentRequestId.Unmarshal(data[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		case 12:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ApplicationId", wireType)
