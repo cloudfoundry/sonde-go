@@ -7,7 +7,7 @@ package events
 import proto "github.com/gogo/protobuf/proto"
 import math "math"
 
-// discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
+// discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto/gogo.pb"
 
 import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 
@@ -386,7 +386,6 @@ type HttpStartStop struct {
 	UserAgent        *string   `protobuf:"bytes,8,req,name=userAgent" json:"userAgent,omitempty"`
 	StatusCode       *int32    `protobuf:"varint,9,req,name=statusCode" json:"statusCode,omitempty"`
 	ContentLength    *int64    `protobuf:"varint,10,req,name=contentLength" json:"contentLength,omitempty"`
-	ParentRequestId  *UUID     `protobuf:"bytes,11,opt,name=parentRequestId" json:"parentRequestId,omitempty"`
 	ApplicationId    *UUID     `protobuf:"bytes,12,opt,name=applicationId" json:"applicationId,omitempty"`
 	InstanceIndex    *int32    `protobuf:"varint,13,opt,name=instanceIndex" json:"instanceIndex,omitempty"`
 	InstanceId       *string   `protobuf:"bytes,14,opt,name=instanceId" json:"instanceId,omitempty"`
@@ -467,13 +466,6 @@ func (m *HttpStartStop) GetContentLength() int64 {
 	return 0
 }
 
-func (m *HttpStartStop) GetParentRequestId() *UUID {
-	if m != nil {
-		return m.ParentRequestId
-	}
-	return nil
-}
-
 func (m *HttpStartStop) GetApplicationId() *UUID {
 	if m != nil {
 		return m.ApplicationId
@@ -509,7 +501,7 @@ func (m *HttpStart) Marshal() (data []byte, err error) {
 	return data[:n], nil
 }
 
-func (m *HttpStart) MarshalTo(data []byte) (int, error) {
+func (m *HttpStart) MarshalTo(data []byte) (n int, err error) {
 	var i int
 	_ = i
 	var l int
@@ -618,7 +610,7 @@ func (m *HttpStop) Marshal() (data []byte, err error) {
 	return data[:n], nil
 }
 
-func (m *HttpStop) MarshalTo(data []byte) (int, error) {
+func (m *HttpStop) MarshalTo(data []byte) (n int, err error) {
 	var i int
 	_ = i
 	var l int
@@ -697,7 +689,7 @@ func (m *HttpStartStop) Marshal() (data []byte, err error) {
 	return data[:n], nil
 }
 
-func (m *HttpStartStop) MarshalTo(data []byte) (int, error) {
+func (m *HttpStartStop) MarshalTo(data []byte) (n int, err error) {
 	var i int
 	_ = i
 	var l int
@@ -780,25 +772,15 @@ func (m *HttpStartStop) MarshalTo(data []byte) (int, error) {
 		i++
 		i = encodeVarintHttp(data, i, uint64(*m.ContentLength))
 	}
-	if m.ParentRequestId != nil {
-		data[i] = 0x5a
-		i++
-		i = encodeVarintHttp(data, i, uint64(m.ParentRequestId.Size()))
-		n7, err := m.ParentRequestId.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n7
-	}
 	if m.ApplicationId != nil {
 		data[i] = 0x62
 		i++
 		i = encodeVarintHttp(data, i, uint64(m.ApplicationId.Size()))
-		n8, err := m.ApplicationId.MarshalTo(data[i:])
+		n7, err := m.ApplicationId.MarshalTo(data[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n8
+		i += n7
 	}
 	if m.InstanceIndex != nil {
 		data[i] = 0x68
@@ -963,10 +945,6 @@ func (m *HttpStartStop) Size() (n int) {
 	if m.ContentLength != nil {
 		n += 1 + sovHttp(uint64(*m.ContentLength))
 	}
-	if m.ParentRequestId != nil {
-		l = m.ParentRequestId.Size()
-		n += 1 + l + sovHttp(uint64(l))
-	}
 	if m.ApplicationId != nil {
 		l = m.ApplicationId.Size()
 		n += 1 + l + sovHttp(uint64(l))
@@ -1051,9 +1029,6 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			if msglen < 0 {
-				return ErrInvalidLengthHttp
-			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
@@ -1118,11 +1093,7 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthHttp
-			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + int(stringLen)
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1146,11 +1117,7 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthHttp
-			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + int(stringLen)
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1174,11 +1141,7 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthHttp
-			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + int(stringLen)
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1201,9 +1164,6 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 				if b < 0x80 {
 					break
 				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthHttp
 			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
@@ -1231,9 +1191,6 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 				if b < 0x80 {
 					break
 				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthHttp
 			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
@@ -1279,11 +1236,7 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthHttp
-			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + int(stringLen)
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1303,9 +1256,6 @@ func (m *HttpStart) Unmarshal(data []byte) error {
 			skippy, err := skipHttp(data[iNdEx:])
 			if err != nil {
 				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthHttp
 			}
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
@@ -1392,11 +1342,7 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthHttp
-			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + int(stringLen)
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1419,9 +1365,6 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 				if b < 0x80 {
 					break
 				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthHttp
 			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
@@ -1505,9 +1448,6 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			if msglen < 0 {
-				return ErrInvalidLengthHttp
-			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
@@ -1532,9 +1472,6 @@ func (m *HttpStop) Unmarshal(data []byte) error {
 			skippy, err := skipHttp(data[iNdEx:])
 			if err != nil {
 				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthHttp
 			}
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
@@ -1636,9 +1573,6 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			if msglen < 0 {
-				return ErrInvalidLengthHttp
-			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
@@ -1703,11 +1637,7 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthHttp
-			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + int(stringLen)
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1731,11 +1661,7 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthHttp
-			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + int(stringLen)
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1759,11 +1685,7 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthHttp
-			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + int(stringLen)
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1807,36 +1729,6 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			}
 			m.ContentLength = &v
 			hasFields[0] |= uint64(0x00000200)
-		case 11:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ParentRequestId", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := data[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthHttp
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.ParentRequestId == nil {
-				m.ParentRequestId = &UUID{}
-			}
-			if err := m.ParentRequestId.Unmarshal(data[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		case 12:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ApplicationId", wireType)
@@ -1852,9 +1744,6 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 				if b < 0x80 {
 					break
 				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthHttp
 			}
 			postIndex := iNdEx + msglen
 			if postIndex > l {
@@ -1900,11 +1789,7 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthHttp
-			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + int(stringLen)
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1924,9 +1809,6 @@ func (m *HttpStartStop) Unmarshal(data []byte) error {
 			skippy, err := skipHttp(data[iNdEx:])
 			if err != nil {
 				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthHttp
 			}
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
@@ -2014,13 +1896,10 @@ func skipHttp(data []byte) (n int, err error) {
 				}
 			}
 			iNdEx += length
-			if length < 0 {
-				return 0, ErrInvalidLengthHttp
-			}
 			return iNdEx, nil
 		case 3:
 			for {
-				var innerWire uint64
+				var wire uint64
 				var start int = iNdEx
 				for shift := uint(0); ; shift += 7 {
 					if iNdEx >= l {
@@ -2028,13 +1907,13 @@ func skipHttp(data []byte) (n int, err error) {
 					}
 					b := data[iNdEx]
 					iNdEx++
-					innerWire |= (uint64(b) & 0x7F) << shift
+					wire |= (uint64(b) & 0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				innerWireType := int(innerWire & 0x7)
-				if innerWireType == 4 {
+				wireType := int(wire & 0x7)
+				if wireType == 4 {
 					break
 				}
 				next, err := skipHttp(data[start:])
@@ -2055,7 +1934,3 @@ func skipHttp(data []byte) (n int, err error) {
 	}
 	panic("unreachable")
 }
-
-var (
-	ErrInvalidLengthHttp = fmt.Errorf("proto: negative length found during unmarshaling")
-)
