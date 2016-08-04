@@ -8,12 +8,14 @@ Go implementation of Cloud Foundry's Dropsonde Protocol
 
 ## Generating Code
 
-1. Install [protobuf](https://github.com/google/protobuf)
-   ```
-   brew install protobuf
+1. Install [protobuf](https://github.com/google/protobuf) Version 3 because of our [dropsonde-protocol dependency](https://github.com/cloudfoundry/dropsonde-protocol#generating-code).
+
+   ```bash
+   # Currently, the command below installs v3.X
+   brew install protobuf --devel
    ```
 1. Generate go code
-   ```
+   ```bash
    ./generate-go.sh
    ```
 
