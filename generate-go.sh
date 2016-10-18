@@ -24,7 +24,7 @@ for i in $(ls definitions/events/*.proto); do
 done
 
 pushd generate-go-tmp/events > /dev/null
-protoc --plugin=$(which protoc-gen-gogo) --gogo_out=$TARGET/events --proto_path=$GOPATH/src:$GOPATH/src/github.com/scalingdata/gogo-protobuf/protobuf:. *.proto
+protoc --plugin=$(which protoc-gen-gogo) --gogo_out=$TARGET/events --proto_path=$GOPATH/src:$GOPATH/src/github.com/scalingdata/gogo-protobuf/protobuf:$GOPATH/bin:. *.proto
 popd > /dev/null
 
 rm -r generate-go-tmp
