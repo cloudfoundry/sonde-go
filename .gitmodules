@@ -1,4 +1,4 @@
 [submodule "definitions"]
 	path = definitions
-	url = https://github.com/cloudfoundry/dropsonde-protocol.git
+	url = ssh://git@github.com:scalingdata/dropsonde-protocol.git
 	branch = master
