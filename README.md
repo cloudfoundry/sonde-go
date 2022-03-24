@@ -15,7 +15,17 @@ Go implementation of Cloud Foundry's Dropsonde Protocol
    brew install protobuf
    ```
 
-2. Generate go code
+2. Clone gogo/protobuf into your GOPATH, gogo generation requires google protobuf files that go mod will not vendor.
+
+   ```bash
+   # Assuming you have a single-valued GOPATH
+   mkdir -p $GOPATH/src/github.com/gogo
+   git clone git@github.com:gogo/protobuf.git $GOPATH/src/github.com/gogo/protobuf
+   GOGO_VERSION=$(go list -m -mod=mod all | grep github.com/gogo/protobuf | awk '{print $2}')
+   cd $GOPATH/src/github.com/gogo/protobuf && git checkout $GOGO_VERSION && cd -
+   ```
+
+3. Generate go code
 
    ```bash
    ./generate-go.sh
