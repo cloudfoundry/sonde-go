@@ -12,8 +12,8 @@ TARGET=`dirname $0`
 TARGET=`dir_resolve $TARGET`
 cd $TARGET
 
-go get github.com/gogo/protobuf/{proto,protoc-gen-gogo,gogoproto}
-go get -u github.com/mailru/easyjson/...
+go install github.com/gogo/protobuf/protoc-gen-gogo
+go install github.com/mailru/easyjson/easyjson
 
 rm -rf generate-go-tmp
 mkdir -p generate-go-tmp/events
@@ -25,7 +25,7 @@ for i in $(ls definitions/events/*.proto); do
 done
 
 pushd generate-go-tmp/events > /dev/null
-protoc --plugin=$(which protoc-gen-gogo) --gogo_out=$TARGET/events --proto_path=$GOPATH/src:$GOPATH/src/github.com/gogo/protobuf/protobuf:. *.proto
+    protoc --plugin=$(which protoc-gen-gogo) --gogo_out=$TARGET/events --proto_path=$GOPATH/src:$GOPATH/src/github.com/gogo/protobuf/protobuf:. *.proto
 popd > /dev/null
 
 rm -r generate-go-tmp
