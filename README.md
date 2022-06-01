@@ -1,6 +1,8 @@
 # sonde-go
 Go implementation of Cloud Foundry's Dropsonde Protocol
 
+If you have any questions, or want to get attention for a PR or issue please reach out on the [#logging-and-metrics channel in the cloudfoundry slack](https://cloudfoundry.slack.com/archives/CUW93AF3M)
+
 ## Libraries sharing this protocol
 
 * [Dropsonde](https://github.com/cloudfoundry/dropsonde) is a Go library for applications that wish to emit messages in this format.
