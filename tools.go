@@ -4,6 +4,6 @@
 package main
 
 import (
-	_ "github.com/gogo/protobuf/protoc-gen-gogo"
 	_ "github.com/mailru/easyjson/easyjson"
+	_ "google.golang.org/protobuf/cmd/protoc-gen-go"
 )
