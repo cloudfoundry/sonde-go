@@ -1,3 +1,5 @@
+DEPRECATED: Do not use this library. It has been deprecated. Use loggregator v2 and https://github.com/cloudfoundry/go-loggregator. 
+
 # sonde-go
 Go implementation of Cloud Foundry's Dropsonde Protocol
 
