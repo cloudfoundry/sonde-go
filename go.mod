@@ -1,6 +1,6 @@
 module github.com/cloudfoundry/sonde-go
 
-go 1.17
+go 1.18
 
 require google.golang.org/protobuf v1.34.2
 
